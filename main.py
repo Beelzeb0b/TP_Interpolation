@@ -4,21 +4,32 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 class Interpolation:
 	__metaclass__ = ABCMeta
 
+	#-----------------------------------------
 	# PROPERTIES
+	#-----------------------------------------
 
-	@abstractproperty
-	def N(self):
-		pass
+	#
+	N = 0
+	
+	#
+	a = 0
+	
+	#
+	b = 0
 
-	@abstractproperty
-	def a(self):
-		pass
+	#-----------------------------------------
+	# CONSTRUCTOR
+	#-----------------------------------------
 
-	@abstractproperty
-	def b(self):
-		pass
+	@abstractmethod
+	def __init__(self, N, a, b):
+		self.N = N
+		self.a = a
+		self.b = b
 
+	#-----------------------------------------
 	# METHODS
+	#-----------------------------------------
 
 	@abstractmethod
 	def Function(self):
@@ -42,8 +53,6 @@ class Interpolation:
 
 # InterpolationUnidimensionnele
 class InterpolationUnidimensionnele(Interpolation):
-	def __init__(self, N, a, b):
-		pass
 
 	def InterpolationPolynomiale(self):
 		pass
@@ -56,8 +65,6 @@ class InterpolationUnidimensionnele(Interpolation):
 
 # InterpolationBidimensionnele
 class InterpolationBidimensionnele(Interpolation):
-	def __init__(self, N, a, b):
-		pass
 
 	def InterpolationPolynomiale(self):
 		pass
@@ -70,7 +77,8 @@ class InterpolationBidimensionnele(Interpolation):
 
 
 def main():
-	pass
+	test = InterpolationUnidimensionnele(10, 10, 1)
+	print(test.N)
 
 
 if __name__ == "__main__":
