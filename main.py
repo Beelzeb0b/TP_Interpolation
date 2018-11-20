@@ -1,66 +1,72 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod, abstractproperty
 
 # Interpolation
 class Interpolation:
-    __metaclass__ = ABCMeta
+	__metaclass__ = ABCMeta
 
-    # PROPERTIES
+	# PROPERTIES
 
-    @abstractproperty
-    def N(self):
-        pass
+	@abstractproperty
+	def N(self):
+		pass
 
-    @abstractproperty
-    def a(self):
-        pass
+	@abstractproperty
+	def a(self):
+		pass
 
-    @abstractproperty
-    def b(self):
-        pass
+	@abstractproperty
+	def b(self):
+		pass
 
-    # METHODS
+	# METHODS
 
-    @abstractmethod
-    def Function(self):
-        pass
+	@abstractmethod
+	def Function(self):
+		pass
 
-    @abstractmethod
-    def InterpolationPolynomiale(self):
-        pass
+	@abstractmethod
+	def InterpolationPolynomiale(self):
+		pass
 
-    @abstractmethod
-    def InterpolationContinue(self):
-        pass
+	@abstractmethod
+	def InterpolationContinue(self):
+		pass
 
-    @abstractmethod
-    def InterpolationSpline(self):
-        pass
+	@abstractmethod
+	def InterpolationSpline(self):
+		pass
 
-    @abstractmethod
-    def CalculErreur(self):
-        pass
+	@abstractmethod
+	def CalculErreur(self):
+		pass
 
 # InterpolationUnidimensionnele
 class InterpolationUnidimensionnele(Interpolation):
-    def InterpolationPolynomiale(self):
-        pass
+	def __init__(self, N, a, b):
+		pass
 
-    def InterpolationContinue(self):
-        pass
+	def InterpolationPolynomiale(self):
+		pass
 
-    def InterpolationSpline(self):
-        pass
+	def InterpolationContinue(self):
+		pass
+
+	def InterpolationSpline(self):
+		pass
 
 # InterpolationBidimensionnele
 class InterpolationBidimensionnele(Interpolation):
+	def __init__(self, N, a, b):
+		pass
+
 	def InterpolationPolynomiale(self):
-        pass
+		pass
 
-    def InterpolationContinue(self):
-        pass
+	def InterpolationContinue(self):
+		pass
 
-    def InterpolationSpline(self):
-        pass
+	def InterpolationSpline(self):
+		pass
 
 
 def main():
@@ -68,4 +74,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+	main()
