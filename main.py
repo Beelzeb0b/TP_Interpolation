@@ -32,8 +32,8 @@ class Interpolation:
 	#-----------------------------------------
 
 	@abstractmethod
-	def Function(self):
-		pass
+	def Function(self, x):
+		return (4*x**3-3*x-4)/(5*x**2+x+1);
 
 	@abstractmethod
 	def InterpolationPolynomiale(self):
