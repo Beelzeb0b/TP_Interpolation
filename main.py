@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
+import numpy
 
 # Interpolation
 class Interpolation:
@@ -18,24 +19,26 @@ class Interpolation:
 	b = 0
 	
 	#
-	y = []
-
-	#
-	x = []
+	point = {}
 
 	#-----------------------------------------
 	# CONSTRUCTOR
 	#-----------------------------------------
 
 	@abstractmethod
-	def __init__(self, N, a, b):
-		self.N = N
+	def __init__(self, a, b, N):
 		self.a = a
 		self.b = b
+		self.N = N
 
 	#-----------------------------------------
 	# METHODS
 	#-----------------------------------------
+
+	@abstractmethod
+	def CreatePoint(self):
+		for x in np.linspace(self.a, self.b, self.N):
+			self.point[x] = self.Function(x)
 
 	@abstractmethod
 	def Function(self, x):
@@ -83,8 +86,9 @@ class InterpolationBidimensionnele(Interpolation):
 
 
 def main():
-	test = InterpolationUnidimensionnele(10, 10, 1)
-	print(test.N)
+	test = InterpolationUnidimensionnele(1, 10, 10)
+	test.CreatePoint()
+	print(test.point)
 
 
 if __name__ == "__main__":
