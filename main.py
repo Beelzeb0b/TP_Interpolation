@@ -19,7 +19,7 @@ class Interpolation:
 	b = 0
 	
 	#
-	point = {}
+	point = [[]]
 
 	#-----------------------------------------
 	# CONSTRUCTOR
@@ -37,16 +37,22 @@ class Interpolation:
 
 	@abstractmethod
 	def CreatePoint(self):
-		for x in np.linspace(self.a, self.b, self.N):
-			self.point[x] = self.Function(x)
+		for i in numpy.linspace(self.a, self.b, self.N):
+			self.point[0][i] = i
+			self.point[1][i] = self.Function(i)
 
 	@abstractmethod
 	def Function(self, x):
 		return (4*x**3-3*x-4)/(5*x**2+x+1);
 
 	@abstractmethod
-	def InterpolationPolynomiale(self):
-		pass
+	def InterpolationPolynomiale(self, x):
+		for i in range(0,self.N-2):
+			self.point[1][i] + (x - self.point[0][i]) * self.Derivative(i)
+
+	@abstractmethod
+	def Derivative(index):
+		return (self.point[1][index+1] - self.point[1][index]) / (self.point[0][index+1] - self.point[0][index])
 
 	@abstractmethod
 	def InterpolationContinue(self):
