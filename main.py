@@ -59,12 +59,20 @@ class Interpolation:
 		return result
 		
 	@abstractmethod
-	def B(self, x, index):
+	def B(self, index):
 		return (self.Derivative(index+2) - self.Derivative(index)) / (self.point[0][index+2]- self.point[0][index])
 
 	@abstractmethod
-	def Derivative(self, index):
-		return (self.point[1][index+1] - self.point[1][index]) / (self.point[0][index+1] - self.point[0][index])
+	def Derivative(self, indexs) # indexs = array of index  
+		nbIndex = len(indexs)
+		result = 0.0;
+		if nbIndex == 1:
+			result = self.point[1][index[0]]
+		else:
+			
+			result = (((nbIndex-1)**self.Derivative(indexs[1:0])) - ((nbIndex-1)**self.Derivative(nbIndex[:-1]) ) / ( self.point[0][index[nbIndex-1]] - self.point[0][0])
+	#def Derivative(self, index):
+	#	return (self.point[1][index+1] - self.point[1][index]) / (self.point[0][index+1] - self.point[0][index])
 
 	@abstractmethod
 	def InterpolationContinue(self):
