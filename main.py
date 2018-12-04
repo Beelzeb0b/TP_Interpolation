@@ -50,11 +50,20 @@ class Interpolation:
 
 	@abstractmethod
 	def InterpolationPolynomiale(self, x):
-		for i in range(0,self.N-2):
-			self.point[1][i] + (x - self.point[0][i]) * self.Derivative(i)
+		result = self.point[1][0] + (x - self.point[0][0]) * self.Derivative(0) #P1
+		for i in range(1,self.N): # All the B
+			print(self.B(x, 0))
+		#	result += self.B(x, 0)
+		#	for j in range(0,i):
+		#		result *= (x - self.point[0][j])
+		return result
+		
+	@abstractmethod
+	def B(self, x, index):
+		return (self.Derivative(index+2) - self.Derivative(index)) / (self.point[0][index+2]- self.point[0][index])
 
 	@abstractmethod
-	def Derivative(index):
+	def Derivative(self, index):
 		return (self.point[1][index+1] - self.point[1][index]) / (self.point[0][index+1] - self.point[0][index])
 
 	@abstractmethod
@@ -68,17 +77,12 @@ class Interpolation:
 	@abstractmethod
 	def CalculErreur(self):
 		pass
-		
-	@abstractmethod
-	def b2(self,x, index):
-		return (Derivative(self.point[0][index+2] - Derivative(self.point[0][index])/(self.point[0][index+2]- self.point[0][index])
-		pass
 
 # InterpolationUnidimensionnele
 class InterpolationUnidimensionnele(Interpolation):
 
-	def InterpolationPolynomiale(self):
-		pass
+	#def InterpolationPolynomiale(self):
+	#	pass
 
 	def InterpolationContinue(self):
 		pass
@@ -102,7 +106,13 @@ class InterpolationBidimensionnele(Interpolation):
 def main():
 	test = InterpolationUnidimensionnele(1, 10, 10)
 	test.CreatePoint()
-	print(test.point)
+
+	x = 5
+
+	#print(test.Function(x))
+	print(test.InterpolationPolynomiale(x))
+	
+	#print(test.CreatePoint)
 
 
 if __name__ == "__main__":
