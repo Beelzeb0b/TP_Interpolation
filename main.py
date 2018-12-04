@@ -68,6 +68,11 @@ class Interpolation:
 	@abstractmethod
 	def CalculErreur(self):
 		pass
+		
+	@abstractmethod
+	def b2(self,x, index):
+		return (Derivative(self.point[0][index+2] - Derivative(self.point[0][index])/(self.point[0][index+2]- self.point[0][index])
+		pass
 
 # InterpolationUnidimensionnele
 class InterpolationUnidimensionnele(Interpolation):
