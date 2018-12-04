@@ -50,29 +50,43 @@ class Interpolation:
 
 	@abstractmethod
 	def InterpolationPolynomiale(self, x):
-		result = self.point[1][0] + (x - self.point[0][0]) * self.Derivative(0) #P1
-		for i in range(1,self.N): # All the B
-			print(self.B(x, 0))
-		#	result += self.B(x, 0)
-		#	for j in range(0,i):
-		#		result *= (x - self.point[0][j])
+		# y[x0]
+		result = self.point[1][0]
+
+		# Newton Formula
+		for i in range(1,self.N):
+			# Yeme différence divisé
+			param = self.point[:i]
+			otherY = self.Derivative(param)
+
+			# Generate all the (x - xN)
+			for j in range(0,i):
+				otherY *= (x - self.point[0][j])
+
+			# Add the current B to the final result
+			result += otherY
+
 		return result
 		
-	@abstractmethod
-	def B(self, index):
-		return (self.Derivative(index+2) - self.Derivative(index)) / (self.point[0][index+2]- self.point[0][index])
+	#@abstractmethod
+	#def B(self, index):
+	#	return (self.Derivative(index+2) - self.Derivative(index)) / (self.point[0][index+2]- self.point[0][index])
 
+	def DividedDifference(self, param):
+		nbElement = len(array)
+		for i in range(0,nbElement):
+			self.DividedDifference(self, param)
+
+	#indexs = array of index
 	@abstractmethod
-	def Derivative(self, indexs) # indexs = array of index  
+	def Derivative(self, indexs):
 		nbIndex = len(indexs)
 		result = 0.0;
-		if nbIndex == 1:
-			result = self.point[1][index[0]]
-		else:
-			
-			result = (((nbIndex-1)**self.Derivative(indexs[1:0])) - ((nbIndex-1)**self.Derivative(nbIndex[:-1]) ) / ( self.point[0][index[nbIndex-1]] - self.point[0][0])
-	#def Derivative(self, index):
-	#	return (self.point[1][index+1] - self.point[1][index]) / (self.point[0][index+1] - self.point[0][index])
+		#if nbIndex == 1:
+		#	result = self.point[1][index[0]]
+		#else:
+		# CERTAINEMENT PROBLEME DANS LES INDEX : indexs[1:]
+		result = (((nbIndex-1)**self.Derivative(indexs[1:])) - ((nbIndex-1)**self.Derivative(nbIndex[:-1]))) / (self.point[0][index[nbIndex-1]] - self.point[0][0])
 
 	@abstractmethod
 	def InterpolationContinue(self):
