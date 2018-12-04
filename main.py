@@ -19,7 +19,7 @@ class Interpolation:
 	b = 0
 	
 	#
-	point = [[]]
+	point = [[],[]] # faire en sorte que point[y][index] et point[x][index]
 
 	#-----------------------------------------
 	# CONSTRUCTOR
@@ -37,9 +37,12 @@ class Interpolation:
 
 	@abstractmethod
 	def CreatePoint(self):
+		self.point = []
+		self.point.append([])
+		self.point.append([])
 		for i in numpy.linspace(self.a, self.b, self.N):
-			self.point[0][i] = i
-			self.point[1][i] = self.Function(i)
+			self.point[0].append(i)
+			self.point[1].append(self.Function(i))
 
 	@abstractmethod
 	def Function(self, x):
