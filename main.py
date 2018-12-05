@@ -40,14 +40,30 @@ class Interpolation:
 		self.point = []
 		self.point.append([])
 		self.point.append([])
-		for i in numpy.linspace(self.a, self.b, self.N):
-			self.point[0].append(i)
-			self.point[1].append(self.Function(i))
+		# calcule y=f(x) pour chaque les 'N' 'x' de 'a' à 'b'
+		for x in numpy.linspace(self.a, self.b, self.N):
+			self.point[0].append(x)
+			self.point[1].append(self.Function(x))
 
+	# f(x)
 	@abstractmethod
 	def Function(self, x):
 		return (4*x**3-3*x-4)/(5*x**2+x+1);
 
+	# formule de Newton
+	@abstractmethod
+	def InterpolationPolynomiale(self, x):	
+		result = self.point[1][0]  # y[x0]
+		for i in range(0, self.N-1):
+			tmp = 1
+			for xi in range(0, i+1):
+				print(xi)
+				tmp *= (x - self.point[0][xi])
+			print(" ")
+			tmp*= self.Derivative(0, i+1)
+			result+=tmp
+		return result
+	'''
 	@abstractmethod
 	def InterpolationPolynomiale(self, x):
 		# y[x0]
@@ -67,7 +83,7 @@ class Interpolation:
 			result += otherY
 
 		return result
-		
+	'''
 	#@abstractmethod
 	#def B(self, index):
 	#	return (self.Derivative(index+2) - self.Derivative(index)) / (self.point[0][index+2]- self.point[0][index])
@@ -77,16 +93,25 @@ class Interpolation:
 		for i in range(0,nbElement):
 			self.DividedDifference(self, param)
 
-	#indexs = array of index
+	#takes i as first index
+	#takes n as nb of index
 	@abstractmethod
-	def Derivative(self, indexs):
-		nbIndex = len(indexs)
-		result = 0.0;
+	def Derivative(self, i, n):
+		result = 0.0
+		if i == n:
+			result = self.point[1][i]
+		else:
+			print(" i=",i,"n=",n)
+			result = (((n-1)**self.Derivative(i+1, n)) - ((n-1)**self.Derivative(i, n-1))) / ( self.point[0][n] - self.point[0][i])
+		return result
+	#def Derivative(self, indexs):
+		#nbIndex = len(indexs)
+		#result = 0.0;
 		#if nbIndex == 1:
 		#	result = self.point[1][index[0]]
 		#else:
 		# CERTAINEMENT PROBLEME DANS LES INDEX : indexs[1:]
-		result = (((nbIndex-1)**self.Derivative(indexs[1:])) - ((nbIndex-1)**self.Derivative(nbIndex[:-1]))) / (self.point[0][index[nbIndex-1]] - self.point[0][0])
+		#result = (((nbIndex-1)**self.Derivative(indexs[1:])) - ((nbIndex-1)**self.Derivative(nbIndex[:-1]))) / (self.point[0][index[nbIndex-1]] - self.point[0][0])
 
 	@abstractmethod
 	def InterpolationContinue(self):
@@ -132,6 +157,8 @@ def main():
 	x = 5
 
 	#print(test.Function(x))
+	#print(test.point[0][1:])
+	print(test.point)
 	print(test.InterpolationPolynomiale(x))
 	
 	#print(test.CreatePoint)
