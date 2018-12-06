@@ -57,7 +57,7 @@ class Interpolation:
 		for i in range(0, self.N-1):
 			tmp = 1
 			for xi in range(0, i+1):
-				print(xi)
+				print("xi",xi)
 				tmp *= (x - self.point[0][xi])
 			print(" ")
 			tmp*= self.Derivative(0, i+1)
@@ -100,9 +100,11 @@ class Interpolation:
 		result = 0.0
 		if i == n:
 			result = self.point[1][i]
+		elif n-1==0: 
+			result = (self.Derivative(i+1, n) - self.Derivative(i, n-1)) / float( self.point[0][n] - self.point[0][i])
 		else:
-			print(" i=",i,"n=",n)
-			result = (((n-1)**self.Derivative(i+1, n)) - ((n-1)**self.Derivative(i, n-1))) / ( self.point[0][n] - self.point[0][i])
+			#print(" i=",i,"n=",n)
+			result = float((((n-1)**self.Derivative(i+1, n)) - ((n-1)**self.Derivative(i, n-1)))) / float(( self.point[0][n] - self.point[0][i]))
 		return result
 	#def Derivative(self, indexs):
 		#nbIndex = len(indexs)
@@ -159,8 +161,12 @@ def main():
 	#print(test.Function(x))
 	#print(test.point[0][1:])
 	print(test.point)
+	#t = ( test.point[0][1] - test.point[0][0])
+	#print("result poli",t)
 	print(test.InterpolationPolynomiale(x))
-	
+	#d = float((((0)**test.Derivative(1, 1)) - ((0)**test.Derivative(0, 0))))
+	#print("deriv",d)
+	#print(test.point[1][0])
 	#print(test.CreatePoint)
 
 
