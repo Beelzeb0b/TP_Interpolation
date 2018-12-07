@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import math
 import sys
 
+
 # Interpolation
 class Interpolation:
 	__metaclass__ = ABCMeta
@@ -22,7 +23,7 @@ class Interpolation:
 	b = 0
 	
 	#
-	point = {'x':[],'y':[]} # faire en sorte que point[y][index] et point[x][index]
+	point = {'x':[],'y':[]}
 
 	#-----------------------------------------
 	# CONSTRUCTOR
@@ -40,7 +41,7 @@ class Interpolation:
 
 	@abstractmethod
 	def Function(self, x):
-		return 1/x#(4*x**3-3*x-4)/(5*x**2+x+1)
+		return np.sin(x)#(4*x**3-3*x-4)/(5*x**2+x+1)
 
 	@abstractmethod
 	def CreatePoint(self):
@@ -49,12 +50,17 @@ class Interpolation:
 			self.point['y'].append(self.Function(i))
 
 	@abstractmethod
-	def DividedDifference(self, yPoint):
-		nbElement = len(yPoint)
-		if nbElement == 2:
-			return (yPoint[1] - yPoint[0]) / (self.point['x'][1] - self.point['x'][0])
-		else:
-			return (self.DividedDifference(yPoint[1:nbElement])) - self.DividedDifference(yPoint[0:nbElement-1]) / (self.point['x'][nbElement-1] - self.point['x'][0])
+	def DividedDifference(self):
+		nbElement = len(self.point['y'])
+
+		# Make a copy the y point array
+		dividedDiff = np.copy(self.point['y'])
+
+		# Calculate all the divided difference)
+		for i in range(1,nbElement):
+			dividedDiff[i:nbElement] = (dividedDiff[i:nbElement] - dividedDiff[i-1])/(self.point['x'][i:nbElement] - self.point['x'][i-1])
+
+		return dividedDiff
 
 	@abstractmethod
 	def InterpolationPolynomiale(self, x):
@@ -80,24 +86,35 @@ class InterpolationUnidimensionnele(Interpolation):
 		# y[x0]
 		result = self.point['y'][0]
 
+		# Get an array of the divided difference
+		dividedDifference = self.DividedDifference()
+
 		# Newton Formula
 		for i in range(1,self.N):
-			# Y'th divided difference
-			otherY = self.DividedDifference(self.point['y'][:i+1])
+			# i'th divided difference
+			otherY = dividedDifference[i]
 
 			# Generate all the (x - xN)
 			for j in range(0,i):
 				otherY *= (x - self.point['x'][j])
 
-			# Add the current B to the final result
 			result += otherY
 
 		return result
 
 	#
 	def InterpolationContinue(self, x):
-		for i in np.linspace(self.a, self.b, self.N):
-			x = a + (b-a/N) * i
+		#h = (b - a) / n
+		#xi = a + h * i
+		#f(xi) = yi
+
+		# i = {0...N-1}
+		#for i in np.linspace(self.a, self.b, self.N):
+		i = 0
+		ai = (self.point['y'][i + 1] - self.point['y'][i]) / (self.point['x'][i + 1] - self.point['x'][i])
+		bi = -((self.point['x'][i] * self.point['y'][i + 1] - self.point['x'][i] + self.point['y'][i]) / (self.point['x'][i + 1] - self.point['x'][i]))
+
+		return ai * x + bi
 
 	#
 	def InterpolationSpline(self, x):
@@ -120,24 +137,46 @@ class InterpolationBidimensionnele(Interpolation):
 
 
 def main():
-	test = InterpolationUnidimensionnele(1, 10, 10)
-	test.CreatePoint()
+	nbPoint = 7
 
-	x = 5
+	Uni = InterpolationUnidimensionnele(1, 10, nbPoint)
+	
+	Uni.CreatePoint()
 
-	#print(test.point['x'])
-	#print(test.point['y'])
+	''' EXEMPLE OF PLOT
+	t = np.arange(0., 5., 0.2)
+	plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
+	plt.show()
+	'''
 
-	#plt.plot(test.point[0],test.point[1])
-	#plt.xlabel("$x$")
-	#plt.ylabel("$y$")
-	#plt.grid(True)
-	#plt.show()
+	x = 3
 
-	print("Function    : {}".format(test.Function(x)))
-	print("Polynomiale : {}".format(test.InterpolationPolynomiale(x)))
+	print("Fonction             : {}".format(Uni.Function(x)))
+	print("Polynomiale          : {}".format(Uni.InterpolationPolynomiale(x)))
+	print("Interval de degré 1  : {}".format(Uni.InterpolationContinue(x)))
 
+	xPoint = []
+	yFunc = []
+	yPoly = []
+	yInterval = []
+
+	for x in np.linspace(1, 10, 100):
+		xPoint.append(x)
+		yFunc.append(Uni.Function(x))
+		yPoly.append(Uni.InterpolationPolynomiale(x))
+		yInterval.append(Uni.InterpolationContinue(x))
+
+	#print(yFunc)
+	#print(yPoly)
+	#print(yInterval)
+
+	plt.plot(xPoint,yFunc, xPoint,yPoly, xPoint,yInterval)
+	plt.xlabel("$x$")
+	plt.ylabel("$y$")
+	plt.grid(True)
+	plt.show()
+	
 
 if __name__ == "__main__":
-	#sys.setrecursionlimit(100000)
+	#sys.setrecursionlimit(1000)
 	main()
