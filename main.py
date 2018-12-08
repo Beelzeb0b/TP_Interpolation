@@ -103,25 +103,27 @@ class InterpolationUnidimensionnele(Interpolation):
 		return result
 
 	#
-	def InterpolationContinue(self, x):
-		#h = (b - a) / n
-		#xi = a + h * i
-		#f(xi) = yi
+	def InterpolationContinue(self, i):
+		dx = (self.b - self.a) / self.N
 
-		# i = {0...N-1}
-		#for i in np.linspace(self.a, self.b, self.N):
-		i = 0
-		ai = (self.point['y'][i + 1] - self.point['y'][i]) / (self.point['x'][i + 1] - self.point['x'][i])
-		bi = -((self.point['x'][i] * self.point['y'][i + 1] - self.point['x'][i] + self.point['y'][i]) / (self.point['x'][i + 1] - self.point['x'][i]))
+		x = self.point['x'][i]
+		x1 = self.point['x'][i+1]
 
-		return ai * x + bi
+		loc_dx = (self.point['x'][i+1] - self.point['x'][i]) / self.N
+
+		a = (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
+		b = - (self.point['x'][i]*self.point['y'][i+1] - self.point['x'][i+1] * self.point['y'][i]) / (self.point['x'][i+1]-self.point['x'][i])
+
+		loc_x = np.arange(self.point['x'][i], self.point['x'][i+1], loc_dx)
+
+		return (loc_x, loc_x * a + b)
 
 	#
 	def InterpolationSpline(self, x):
 		pass
 
 # InterpolationBidimensionnele
-class InterpolationBidimensionnele(Interpolation):
+class InterpolationBidimensionnele(InterpolationUnidimensionnele):
 
 	#
 	def InterpolationPolynomiale(self, x):
@@ -139,43 +141,53 @@ class InterpolationBidimensionnele(Interpolation):
 def main():
 	nbPoint = 7
 
-	Uni = InterpolationUnidimensionnele(1, 10, nbPoint)
+	a = 1
+	b = 10
+
+	#POLYNOMIAL BUG SI b > nbPoint
+
+	Uni = InterpolationUnidimensionnele(a, b, nbPoint)
 	
 	Uni.CreatePoint()
 
-	''' EXEMPLE OF PLOT
-	t = np.arange(0., 5., 0.2)
-	plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
-	plt.show()
-	'''
-
-	x = 3
-
-	print("Fonction             : {}".format(Uni.Function(x)))
-	print("Polynomiale          : {}".format(Uni.InterpolationPolynomiale(x)))
-	print("Interval de degré 1  : {}".format(Uni.InterpolationContinue(x)))
+	x = 19
 
 	xPoint = []
 	yFunc = []
 	yPoly = []
-	yInterval = []
 
-	for x in np.linspace(1, 10, 100):
+	xInterval = []
+	yInterval = []
+	for i in range(nbPoint-1):
+		(xp, yp) = Uni.InterpolationContinue(i)
+		xInterval.extend(xp)
+		yInterval.extend(yp)
+
+	#print("Fonction             : {}".format(Uni.Function(x)))
+	#print("Polynomiale          : {}".format(Uni.InterpolationPolynomiale(x)))
+	#print("Interval de degré 1  : {}".format(Uni.InterpolationContinue(x)))
+
+	
+
+	for x in np.linspace(a, b, 100):
 		xPoint.append(x)
 		yFunc.append(Uni.Function(x))
 		yPoly.append(Uni.InterpolationPolynomiale(x))
-		yInterval.append(Uni.InterpolationContinue(x))
+		#yInterval.append(Uni.InterpolationContinue(x))
 
 	#print(yFunc)
 	#print(yPoly)
 	#print(yInterval)
 
-	plt.plot(xPoint,yFunc, xPoint,yPoly, xPoint,yInterval)
+	plt.plot(xPoint,yFunc, label="Fonction")
+	plt.plot(xPoint,yPoly, label="Poly degré N-1")
+	plt.plot(xInterval,yInterval, label="Morceaux degré 1")
 	plt.xlabel("$x$")
 	plt.ylabel("$y$")
+	plt.legend(bbox_to_anchor=(0., 1.02, 1., 0.102), loc=3, ncol=3, mode="expand", borderaxespad=0.)
 	plt.grid(True)
 	plt.show()
-	
+
 
 if __name__ == "__main__":
 	#sys.setrecursionlimit(1000)
