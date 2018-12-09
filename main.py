@@ -3,11 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import sys
+import enum
 
 
 # Interpolation
 class Interpolation:
 	__metaclass__ = ABCMeta
+	
 
 	#-----------------------------------------
 	# PROPERTIES
@@ -75,8 +77,11 @@ class Interpolation:
 		pass
 
 	@abstractmethod
-	def CalculErreur(self):
-		pass
+	def CalculErreur(self, yFunc, yInterpol):
+		yErreur = []
+		for i in range(self.N):
+			yErreur.append(yFunc[i] - yInterpol[i])
+		return yErreur
 
 # InterpolationUnidimensionnele
 class InterpolationUnidimensionnele(Interpolation):
@@ -168,17 +173,25 @@ def main():
 	#print("Interval de degré 1  : {}".format(Uni.InterpolationContinue(x)))
 
 	
-
+	# calcul y de la fonction selon x
+	# determine y avec interpolation polynomial selon x
 	for x in np.linspace(a, b, 100):
 		xPoint.append(x)
 		yFunc.append(Uni.Function(x))
 		yPoly.append(Uni.InterpolationPolynomiale(x))
 		#yInterval.append(Uni.InterpolationContinue(x))
+		
+	print(Uni.CalculErreur(yFunc, yPoly))
+	#print(Uni.point['y'][1])
+	#print(yFunc[1])
+	#print(yPoly[1])
+	
 
 	#print(yFunc)
 	#print(yPoly)
 	#print(yInterval)
 
+	# Affich la fonction, le resultat de l'interpolation poly
 	plt.plot(xPoint,yFunc, label="Fonction")
 	plt.plot(xPoint,yPoly, label="Poly degré N-1")
 	plt.plot(xInterval,yInterval, label="Morceaux degré 1")
