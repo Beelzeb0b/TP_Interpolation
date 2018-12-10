@@ -51,11 +51,11 @@ class Interpolation:
 	def DividedDifference(self, i):
 		return (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
 
-	def NewtonCoef(self):
-		nbElement = len(self.point['y'])
+	def NewtonCoef(self, y):
+		nbElement = len(y)
 
 		# Make a copy the y point array
-		dividedDiff = np.copy(self.point['y'])
+		dividedDiff = np.copy(y)
 
 		# Calculate all the divided difference
 		for i in range(1,nbElement):
@@ -75,23 +75,23 @@ class Interpolation:
 	def ClampedCubicSplineInterpolation(self, x):
 		pass
 
-	@abstractmethod
+	# Probably need some rework to work with all function
 	def Error(self, yFunc, yCalculated):
 		yError = []
 		for i in range(self.N):
-			yError.append(yFunc[i] - yCalculated)
+			yError.append(yFunc[i] - yCalculated[i])
 		return yError
 
 # OneDInterpolation
 class OneDInterpolation(Interpolation):
 
-	#
+	# FAIRE RUNGE
 	def PolynomialeInterpolation(self, x):
 		# y[x0]
 		result = self.point['y'][0]
 
 		# Get an array of the divided difference
-		dividedDifference = self.NewtonCoef()
+		dividedDifference = self.NewtonCoef(self.point['y'])
 
 		# Newton Formula
 		for i in range(1,self.N):
@@ -106,89 +106,85 @@ class OneDInterpolation(Interpolation):
 
 		return result
 
-	# PIECEWISE V2
-	# COMMENT FAIRE BIDIMENSSIONNEL ?!?!
-	# unidimenssionnel -> x0, x1, y0, y1
-	# bidimenssionnel -> x0, y0 ???? MANQUE 2 VALEURS !?!?
-	#def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):
-		'''x0 = int(x0)
+	# W.I.P. working on the 2d piecewise
+	def PiecewiseInterpolation(self, x, x0, x1, y0, y1):#
+		x0 = int(x0)
 		x1 = int(x1)
 		y0 = int(y0)
 		y1 = int(y1)
 
-		loc_dx = abs(x1 - x0) / ptPerCouple
+		#loc_dx = (x1 - x0) / ptPerCouple
 
-		if loc_dx == 0:
-			loc_dx = x0
+		#loc_x = np.arange(x0, x1+0.1, loc_dx) #+0.1 to include the stop number
 
-		loc_x = np.arange(x0, x1+0.1, loc_dx) #+0.1 to include the stop number
+		a = (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
+		b = - (self.point['x'][i]*self.point['y'][i+1] - self.point['x'][i+1] * self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
 
-		a = abs(y1 - y0) / abs(x1 - x0)
-		b = - abs(x0*y1 - x1 * y0) / abs(x1 - x0)
+		return a * x + b
 
-		return (loc_x, a * loc_x + b)'''
-
-	def PiecewiseInterpolation(self, i, ptPerCouple):
-		x0 = self.point['x'][i]
-		x1 = self.point['x'][i+1]
-		y0 = self.point['y'][i]
-		y1 = self.point['y'][i+1]
-
-		loc_dx = abs(x1 - x0) / ptPerCouple
-
-		loc_x = np.arange(x0, x1+0.1, loc_dx) #+0.1 to include the stop number
-
-		a = (y1 - y0) / (x1 - x0)
-		b = - (x0*y1 - x1 * y0) / (x1 - x0)
-
-		return (loc_x, a * loc_x + b)
-
-
-	'''
-	Take x and return y [W.I.P.]
-	def Interp(self, x):
+	# Piecewise interpolation that take an x as param
+	def PiecewiseInterpolationX(self, x):
+		# Find the interval for the x param
+		# i -> the index of x0/y0
 		i = -1
 		for e in self.point['x']:
 			if e >= x:
 				break
 			i = i + 1
 
-		#i -> index de x param
-		#trouver un moyen de x -> y
-
+		# Get the right y
 		a = (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
-		b = - (self.point['x'][i]*self.point['y'][i+1] - self.point['x'][i+1] * self.point['y'][i]) / (self.point['x'][i+1]-self.point['x'][i])
+		b = - (self.point['x'][i]*self.point['y'][i+1] - self.point['x'][i+1] * self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
 
-		return a * self.point['x'][i] + b'''
+		return a * x + b
 
-	#
-	def ClampedCubicSplineInterpolation(self, x):
-		#coef = self.DividedDifference()
+	'''
+	# First version of the PiecewiseInterpolation
+	def PiecewiseInterpolation(self, i, ptPerCouple):
+		x0 = self.point['x'][i]
+		x1 = self.point['x'][i+1]
+		y0 = self.point['y'][i]
+		y1 = self.point['y'][i+1]
 
-		deltaY[xi, xj] = (y[j] - y[i]) / (x[j] - x[i])
+		loc_dx = (x1 - x0) / ptPerCouple
 
+		loc_x = np.arange(x0, x1+0.1, loc_dx) #+0.1 to include the stop number
+
+		a = (y1 - y0) / (x1 - x0)
+		b = - (x0*y1 - x1 * y0) / (x1 - x0)
+
+		return (loc_x, a * loc_x + b)'''
+
+	# W.I.P.
+	def ClampedCubicSplineInterpolation(self, ptPerCouple):
 		p = []
-		p[0] = self.a
-		p[self.N] = self.b
+		#p[0] = #derivé de s(self.a) -> ?
+		#p[self.N] = #derivé de s(self.b) -> ?
 
 		# Generate all the P
 		for i in range(1, self.N-1):
 			# HOW TO GET p[i] ?!?!
 			#p[i] = ???
+
 			#p[i] = s'[x[i]]
 			#p[i+1] = s'[x[i+1]]
 			#pi-1 + 4*pi + pi+1 = 3 * (self.DividedDifference(i) + self.DividedDifference(i-1))
 			pass
 
 		s = []
+		xPoint = []
 
 		# Generate all the S
-		for i in range(self.N):# self.N-1, parce que i+1 ??
-			s[i] = self.point['y'][i] + self.DividedDifference(i) * (x - self.point['x'][i])
-			s[i] += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i]))) * (p[i+1] - p[i]) * (x - self.point['x'][i]) * (x - self.point['x'][i+1])
-			s[i] += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i])**2)) * (p[i+1] + p[i] - 2 * self.DividedDifference(i))
-			s[i] *= (((x - self.point['x'][i])**2 * (x - self.point['x'][i+1])) + (x - self.point['x'][i]) * (x - self.point['x'][i+1])**2)
-
+		for i in range(self.N-1):
+			for x in range(self.point['x'][i], self.point['x'][i+1], ptPerCouple):
+				xPoint[i].append(x)
+				result = self.point['y'][i] + self.DividedDifference(i) * (x - self.point['x'][i])
+				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i]))) * (p[i+1] - p[i]) * (x - self.point['x'][i]) * (x - self.point['x'][i+1])
+				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i])**2)) * (p[i+1] + p[i] - 2 * self.DividedDifference(i))
+				result *= (((x - self.point['x'][i])**2 * (x - self.point['x'][i+1])) + (x - self.point['x'][i]) * (x - self.point['x'][i+1])**2)
+				s[i].append(result)
+		
+		return (xPoint, s)
 
 # TwoDInterpolation
 class TwoDInterpolation(OneDInterpolation):
@@ -212,27 +208,44 @@ class TwoDInterpolation(OneDInterpolation):
 		#for y in range(len(self.point)):
 		#	pass
 
+	# Test function for PiecewiseInterpolation_2d
+	def test(self, x, x0, x1, y0, y1, Q0, Q1):
+		x0 = int(x0)
+		x1 = int(x1)
+		y0 = int(y0)
+		y1 = int(y1)
+
+		return ((x1 - x) / (x1 - x0)) * Q0 + ((x - x0) / (x1 - x0)) * Q1
+
+
 	#
 	def PiecewiseInterpolation_2d(self, ptPerCouple):
 		newImage = []
 
 		# Generate new X
-		'''for y in range(len(self.point)-1):
+		for y in range(len(self.point)-1):
 			newImage.append([])
 			newImage[y].append(self.point[y][0])
 			for x in range(len(self.point[0])-1):
-				newImage[y].append(self.PiecewiseInterpolation(self.point[y][x], self.point[y][x+1], self.point[y][x], self.point[y+1][x], ptPerCouple))
+				#[y].append(self.test(x, x, x+1, y, y+1, self.point[y][x], self.point[y][x+1]))
+				xp = self.PiecewiseInterpolation(x, x, x+1, y, y+1, ptPerCouple)
+				#print(xp)
+				newImage[y].append(xp*self.point[y][x])
+				#newImage[y].extend(yp)
 				newImage[y].append(self.point[y][x+1])
-
+		
+		#(yp, xp) = self.PiecewiseInterpolation(0, 0+1, 0, 0+1, 1)
+		#print(xp)
 		# Generate new Y
-		for y in range(0, (len(newImage)*2)-2, 2):
+		'''for y in range(0, (len(newImage)*2)-2, 2):
 			newImage.insert(y+1, [])
 			newImage[y+1].append(newImage[y][x])
 			for x in range(len(newImage[0])-2):
-				newImage[y+1].append(self.PiecewiseInterpolation(newImage[y][x], newImage[y+2][x], newImage[y][x], newImage[y][x+2], ptPerCouple))
-			newImage[y+1].append(newImage[y][x])
+				#newImage[y+1].append(self.PiecewiseInterpolation(newImage[y][x], newImage[y+2][x], newImage[y][x], newImage[y][x+2], ptPerCouple))
+				newImage[y+1].append(self.test(y, y, y+1, x, x+1, newImage[y][x], newImage[y+2][x]))
+			newImage[y+1].append(newImage[y][x])'''
 
-		self.point = newImage'''
+		self.point = newImage
 
 	#
 	def ClampedCubicSplineInterpolation_2d(self, x):
@@ -266,28 +279,26 @@ def main():
 	
 	Uni.CreatePoint()
 
-	# Calcul les points X et Y
-	for x in np.linspace(a, b, 100):
+	# 
+	for x in np.linspace(a, b, 100):#
 		xFunc.append(x)
 		yFunc.append(Uni.Function(x))
 		xPoly.append(x)
 		yPoly.append(Uni.PolynomialeInterpolation(x))
-		xSpline.append(x)
-		#ySpline.append(Uni.ClampedCubicSplineInterpolation(x))
+		xInterval.append(x)
+		yInterval.append(Uni.PiecewiseInterpolationX(x))
 
-	# Piecewise
-	for i in range(nbPoint-1):
-		(xp, yp) = Uni.PiecewiseInterpolation(i, 10)
-		xInterval.extend(xp)
-		yInterval.extend(yp)
-
+	# Spline
+	#(xp, yp) = Uni.ClampedCubicSplineInterpolation(2)
+	#xSpline.extend(xp)
+	#ySpline.extend(yp)
 
 	#print(yFunc)
 	#print(yPoly)
 	#print(yInterval)
 	#print(ySpline)
 
-	# Affiche la fonction ainsi que les résultats des différentes méthodes
+	# Show the function as well as the result of all the methods
 	plt.plot(xFunc,yFunc, label="Fonction")
 	plt.plot(xPoly,yPoly, '-', label="Poly degré N-1")
 	plt.plot(xInterval,yInterval, '-', label="Morceaux degré 1")
