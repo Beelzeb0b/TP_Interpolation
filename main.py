@@ -48,8 +48,8 @@ class Interpolation:
 			self.point['x'].append(i)
 			self.point['y'].append(self.Function(i))
 
-	def DividedDifference(self, i):
-		return (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
+	def DividedDifference(self, x0, x1, y0, y1):
+		return (y1 - y0) / (x1 - x0)
 
 	def NewtonCoef(self, y):
 		nbElement = len(y)
@@ -85,7 +85,7 @@ class Interpolation:
 # OneDInterpolation
 class OneDInterpolation(Interpolation):
 
-	# FAIRE RUNGE
+	#
 	def PolynomialeInterpolation(self, x):
 		# y[x0]
 		result = self.point['y'][0]
@@ -106,21 +106,21 @@ class OneDInterpolation(Interpolation):
 
 		return result
 
-	# W.I.P. working on the 2d piecewise
-	def PiecewiseInterpolation(self, x, x0, x1, y0, y1):#
+	# Piecewise interpolation
+	def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):#
 		x0 = int(x0)
 		x1 = int(x1)
 		y0 = int(y0)
 		y1 = int(y1)
 
-		#loc_dx = (x1 - x0) / ptPerCouple
+		loc_dx = (x1 - x0) / ptPerCouple #nb point
 
-		#loc_x = np.arange(x0, x1+0.1, loc_dx) #+0.1 to include the stop number
+		loc_x = np.arange(x0, x1, loc_dx) #+0.1 to include the stop number
 
-		a = (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
-		b = - (self.point['x'][i]*self.point['y'][i+1] - self.point['x'][i+1] * self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
+		a = self.DividedDifference(x0, x1, y0, y1)
+		b = - (x0 * y1 - x1 * y0) / (x1 - x0)
 
-		return a * x + b
+		return a * loc_x + b
 
 	# Piecewise interpolation that take an x as param
 	def PiecewiseInterpolationX(self, x):
@@ -133,27 +133,11 @@ class OneDInterpolation(Interpolation):
 			i = i + 1
 
 		# Get the right y
-		a = (self.point['y'][i+1] - self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
+		a = self.DividedDifference(self.point['x'][i], self.point['x'][i+1], self.point['y'][i], self.point['y'][i+1])
 		b = - (self.point['x'][i]*self.point['y'][i+1] - self.point['x'][i+1] * self.point['y'][i]) / (self.point['x'][i+1] - self.point['x'][i])
 
 		return a * x + b
 
-	'''
-	# First version of the PiecewiseInterpolation
-	def PiecewiseInterpolation(self, i, ptPerCouple):
-		x0 = self.point['x'][i]
-		x1 = self.point['x'][i+1]
-		y0 = self.point['y'][i]
-		y1 = self.point['y'][i+1]
-
-		loc_dx = (x1 - x0) / ptPerCouple
-
-		loc_x = np.arange(x0, x1+0.1, loc_dx) #+0.1 to include the stop number
-
-		a = (y1 - y0) / (x1 - x0)
-		b = - (x0*y1 - x1 * y0) / (x1 - x0)
-
-		return (loc_x, a * loc_x + b)'''
 
 	# W.I.P.
 	def ClampedCubicSplineInterpolation(self, ptPerCouple):
@@ -166,8 +150,11 @@ class OneDInterpolation(Interpolation):
 			# HOW TO GET p[i] ?!?!
 			#p[i] = ???
 
-			#p[i] = s'[x[i]]
-			#p[i+1] = s'[x[i+1]]
+			#y[i]   = s[i](x[i])
+
+			#p[i]   = s'[i](x[i])
+			#p[i+1] = s'[i](x[i+1])
+
 			#pi-1 + 4*pi + pi+1 = 3 * (self.DividedDifference(i) + self.DividedDifference(i-1))
 			pass
 
@@ -183,6 +170,10 @@ class OneDInterpolation(Interpolation):
 				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i])**2)) * (p[i+1] + p[i] - 2 * self.DividedDifference(i))
 				result *= (((x - self.point['x'][i])**2 * (x - self.point['x'][i+1])) + (x - self.point['x'][i]) * (x - self.point['x'][i+1])**2)
 				s[i].append(result)
+
+		# si(x) = ai + bi*(x-xi) + ci*(x-xi)**2 + di*(x-xi)**3
+		# si'(x) = bi + 2*ci*(x-xi) + 3*di*(x-xi)**2
+		# si''(x) = 2*ci + 6*di*(x-xi)
 		
 		return (xPoint, s)
 
@@ -202,49 +193,34 @@ class TwoDInterpolation(OneDInterpolation):
 	def PolynomialeInterpolation_2d(self, x):
 		newImage = [[]]
 
-		#for x in range(len(self.point[0])):
-		#	self.PolynomialeInterpolation(self.point)
 
-		#for y in range(len(self.point)):
-		#	pass
-
-	# Test function for PiecewiseInterpolation_2d
-	def test(self, x, x0, x1, y0, y1, Q0, Q1):
-		x0 = int(x0)
-		x1 = int(x1)
-		y0 = int(y0)
-		y1 = int(y1)
-
-		return ((x1 - x) / (x1 - x0)) * Q0 + ((x - x0) / (x1 - x0)) * Q1
-
-
-	#
-	def PiecewiseInterpolation_2d(self, ptPerCouple):
+	# NEED TO REPLACE "TEST" WITH "PIECEWISE"
+	def PiecewiseInterpolation_2d(self):
 		newImage = []
 
-		# Generate new X
-		for y in range(len(self.point)-1):
+		# Generate new line
+		for y in range(len(self.point)):
 			newImage.append([])
 			newImage[y].append(self.point[y][0])
 			for x in range(len(self.point[0])-1):
-				#[y].append(self.test(x, x, x+1, y, y+1, self.point[y][x], self.point[y][x+1]))
-				xp = self.PiecewiseInterpolation(x, x, x+1, y, y+1, ptPerCouple)
-				#print(xp)
-				newImage[y].append(xp*self.point[y][x])
-				#newImage[y].extend(yp)
-				newImage[y].append(self.point[y][x+1])
-		
-		#(yp, xp) = self.PiecewiseInterpolation(0, 0+1, 0, 0+1, 1)
-		#print(xp)
-		# Generate new Y
-		'''for y in range(0, (len(newImage)*2)-2, 2):
-			newImage.insert(y+1, [])
-			newImage[y+1].append(newImage[y][x])
-			for x in range(len(newImage[0])-2):
-				#newImage[y+1].append(self.PiecewiseInterpolation(newImage[y][x], newImage[y+2][x], newImage[y][x], newImage[y][x+2], ptPerCouple))
-				newImage[y+1].append(self.test(y, y, y+1, x, x+1, newImage[y][x], newImage[y+2][x]))
-			newImage[y+1].append(newImage[y][x])'''
+				xp = self.PiecewiseInterpolation(x, x+1, self.point[y][x], self.point[y][x+1], 2)
+				newImage[y].extend(xp)
+			newImage[y].append(self.point[y][-1])
 
+		# Generate new row
+		for y in range(0, (len(newImage))*2-2, 2):
+			newImage.insert(y+1, [])
+			for x in range(len(newImage[0])):
+				xp = self.PiecewiseInterpolation(y, y+1, newImage[y][x], newImage[y+2][x], 1)
+				newImage[y+1].extend(xp)
+
+		# Generate last row
+		newImage.append([])
+		for x in range(len(newImage[0])):
+			xp = self.PiecewiseInterpolation(0, 1, newImage[-2][x], newImage[-2][x], 1)
+			newImage[-1].append(xp)
+
+		# Replace the old image with the new one
 		self.point = newImage
 
 	#
@@ -270,15 +246,20 @@ def main():
 	xSpline = []
 	ySpline = []
 
-	'''Bi = TwoDInterpolation(a, b, nbPoint)
-	Bi.loadImage('image.png')
-	Bi.PiecewiseInterpolation_2d(2)
-	Bi.saveImage('output.png')'''
-
+	#
 	Uni = OneDInterpolation(a, b, nbPoint)
-	
-	Uni.CreatePoint()
 
+	#
+	Bi = TwoDInterpolation(a, b, nbPoint)
+
+	Bi.loadImage('image.png')
+	Bi.PiecewiseInterpolation_2d()
+	Bi.saveImage('output.png')
+	
+	#
+	Uni.CreatePoint()
+	
+	'''
 	# 
 	for x in np.linspace(a, b, 100):#
 		xFunc.append(x)
@@ -308,6 +289,8 @@ def main():
 	plt.legend(bbox_to_anchor=(0., 1.02, 1., 0.102), loc=3, ncol=3, mode="expand", borderaxespad=0.)
 	plt.grid(True)
 	plt.show()
+	'''
+	
 
 
 if __name__ == "__main__":
