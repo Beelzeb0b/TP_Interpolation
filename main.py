@@ -36,6 +36,7 @@ def main():
 	#
 	Inter1d.CreatePoint()
 	
+	'''
 	# 
 	for x in np.linspace(a, b, 100):#
 		xFunc.append(x)
@@ -55,11 +56,13 @@ def main():
 	plt.legend(bbox_to_anchor=(0., 1.02, 1., 0.102), loc=3, ncol=3, mode="expand", borderaxespad=0.)
 	plt.grid(True)
 	plt.show()
+	'''
 
 	#
-	'''Inter2d.loadImage()
-	Inter2d.PiecewiseInterpolation_2d()
-	Inter2d.saveImage()'''
+	Inter2d.loadImage()
+	#Inter2d.PiecewiseInterpolation_2d()
+	Inter2d.PolynomialeInterpolation_2d()
+	Inter2d.saveImage()
 	
 
 

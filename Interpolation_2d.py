@@ -43,9 +43,39 @@ class Interpolation_2d(Interpolation):
 	def saveImage(self):
 		scipy.misc.imsave(self.outputImage, self.point)
 
+	# Used to generate new row in polynomiale interpolation
+	def colArrayValue(self, point, col):
+		result = []
+		for i in range(len(point)):
+			result.append(point[i][col])
+		return result
+
 	#
-	def PolynomialeInterpolation_2d(self, x):
-		pass
+	def PolynomialeInterpolation_2d(self):
+		newImage = []
+
+		xPoint = np.arange(len(self.point[0]))
+
+		# Generate new line
+		for y in range(len(self.point)):
+
+			newImage.append([])
+
+			yPoint = self.point[y]
+
+			print("-------------------------------------")
+
+			for x in range(len(self.point[0])):
+				xp = self.PolynomialeInterpolation(x, xPoint, yPoint) # Strange output value, way to big [BUGGED]
+				print(xp)
+				newImage[y].append(xp)
+
+		# Generate new row
+		# TODO
+		# self.colArrayValue()
+
+		# Replace the old image with the new one
+		self.point = newImage
 
 
 	#
@@ -78,5 +108,5 @@ class Interpolation_2d(Interpolation):
 		self.point = newImage
 
 	#
-	def ClampedCubicSplineInterpolation_2d(self, x):
+	def ClampedCubicSplineInterpolation_2d(self):
 		pass

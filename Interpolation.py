@@ -37,8 +37,8 @@ class Interpolation:
 
 		# Calculate all the divided difference
 		for i in range(1,nbElement):
-			dividedDiff[i:nbElement] = (dividedDiff[i:] - dividedDiff[i-1])/(xPoint[i:] - xPoint[i-1])
-
+			dividedDiff[i:nbElement] = self.DividedDifference(xPoint[i-1], xPoint[i:], dividedDiff[i-1], dividedDiff[i:])
+			
 		return dividedDiff
 
 	#
@@ -50,7 +50,7 @@ class Interpolation:
 		dividedDifference = self.NewtonCoef(xPoint, yPoint)
 
 		# Newton Formula
-		for i in range(1,self.N):
+		for i in range(1,len(xPoint)):#self.N
 			# i'th divided difference
 			otherY = dividedDifference[i]
 
