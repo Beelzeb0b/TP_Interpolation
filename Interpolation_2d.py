@@ -44,42 +44,109 @@ class Interpolation_2d(Interpolation):
 		scipy.misc.imsave(self.outputImage, self.point)
 
 	# Used to generate new row in polynomiale interpolation
-	def colArrayValue(self, point, col):
+	# Get the y row
+	def colArrayValue(self, array, col):
 		result = []
-		for i in range(len(point)):
-			result.append(point[i][col])
+		for i in range(len(array)):
+			if len(array[i]) <= col:
+				result.append(0)
+			else:
+				result.append(array[i][col])
 		return result
 
 	#
-	def PolynomialeInterpolation_2d(self):
+	def getIndexs(self, arraySize, index, space):
+		startIndex = 0
+		stopIndex = 0
+
+		if arraySize > (space*2):
+			startIndex = index - space
+			stopIndex = index + space
+			
+			if (index-space) < 0:
+				startIndex = 0
+				stopIndex = (space*2)
+			elif (index+space) > arraySize:
+				startIndex = arraySize - (space*2)
+				stopIndex = arraySize
+
+		return (int(startIndex), int(stopIndex))
+
+	#
+	def PolynomialeInterpolation(self, nbPoint):
 		newImage = []
 
-		xPoint = np.arange(len(self.point[0]))
+		space = nbPoint / 2
 
 		# Generate new line
+		# WORK FINE
 		for y in range(len(self.point)):
 
 			newImage.append([])
 
-			yPoint = self.point[y]
-
-			print("-------------------------------------")
-
 			for x in range(len(self.point[0])):
-				xp = self.PolynomialeInterpolation(x, xPoint, yPoint) # Strange output value, way to big [BUGGED]
-				print(xp)
+				newImage[y].append(self.point[y][x])
+
+				# Array of X
+				(start, stop) = self.getIndexs(len(self.point[y]), x, space)
+				xPoint = np.arange(start, stop)
+
+				# Array of Pixels
+				(start, stop) = self.getIndexs(len(self.point[y]), x, space)
+				yPoint = self.point[y][start:stop]
+
+				# Create new X
+				xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
 				newImage[y].append(xp)
 
 		# Generate new row
-		# TODO
-		# self.colArrayValue()
+		# CURRENTLY BUGGED
+		# the output value seems legit, but strange effect
+		for y in range(0, (len(newImage))*2-2, 2):
+
+			newImage.insert(y+1, [])
+
+			for x in range(len(newImage[0])):
+
+				# Get the n column
+				array = self.colArrayValue(newImage, x)
+
+				# Array of X
+				(start, stop) = self.getIndexs(len(newImage[y]), x, space)
+				xPoint = np.arange(start, stop)
+
+				# Array of Pixels
+				(start, stop) = self.getIndexs(len(array), x, space)
+				yPoint = array[start:stop]
+
+				# Create new X
+				xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
+				print(xp) # new pixel
+				newImage[y+1].append(xp)
+
+		# Generate last row
+		'''newImage.append([])
+		for x in range(len(newImage[0])):
+			array = self.colArrayValue(newImage, x)
+
+			# Array of X
+			(start, stop) = self.getIndexs(len(newImage[y]), x, space)
+			xPoint = np.arange(start, stop)
+
+			# Array of Pixels
+			(start, stop) = self.getIndexs(len(array), x, space)
+			yPoint = array[start:stop]
+
+			# Create new X
+			xp = super().PolynomialeInterpolation(x, xPoint, yPoint)#y
+			newImage[-1].append(xp)'''
 
 		# Replace the old image with the new one
 		self.point = newImage
 
 
 	#
-	def PiecewiseInterpolation_2d(self):
+	def PiecewiseInterpolation(self):
 		newImage = []
 
 		# Generate new line
@@ -87,7 +154,7 @@ class Interpolation_2d(Interpolation):
 			newImage.append([])
 			newImage[y].append(self.point[y][0])
 			for x in range(len(self.point[0])-1):
-				xp = self.PiecewiseInterpolation(x, x+1, self.point[y][x], self.point[y][x+1], 2)
+				xp = super().PiecewiseInterpolation(x, x+1, self.point[y][x], self.point[y][x+1], 2)
 				newImage[y].extend(xp)
 			newImage[y].append(self.point[y][-1])
 
@@ -95,18 +162,18 @@ class Interpolation_2d(Interpolation):
 		for y in range(0, (len(newImage))*2-2, 2):
 			newImage.insert(y+1, [])
 			for x in range(len(newImage[0])):
-				xp = self.PiecewiseInterpolation(y, y+1, newImage[y][x], newImage[y+2][x], 1)
+				xp = super().PiecewiseInterpolation(y, y+1, newImage[y][x], newImage[y+2][x], 1)
 				newImage[y+1].extend(xp)
 
 		# Generate last row
 		newImage.append([])
 		for x in range(len(newImage[0])):
-			xp = self.PiecewiseInterpolation(0, 1, newImage[-2][x], newImage[-2][x], 1)
+			xp = super().PiecewiseInterpolation(0, 1, newImage[-2][x], newImage[-2][x], 1)
 			newImage[-1].append(xp)
 
 		# Replace the old image with the new one
 		self.point = newImage
 
 	#
-	def ClampedCubicSplineInterpolation_2d(self):
+	def ClampedCubicSplineInterpolation(self):
 		pass

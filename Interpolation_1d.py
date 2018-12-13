@@ -53,3 +53,19 @@ class Interpolation_1d(Interpolation):
 		for i in range(self.N):
 			yError.append(yFunc[i] - yCalculated[i])
 		return yError
+
+	#
+	def PolynomialeInterpolation(self, x):
+		return super().PolynomialeInterpolation(x, self.point['x'], self.point['y'])
+
+	# Piecewise interpolation
+	def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):
+		return super().PiecewiseInterpolation(x0, x1, y0, y1, ptPerCouple)
+
+	# Piecewise interpolation that take an x as param
+	def PiecewiseInterpolationX(self, x):
+		return super().PiecewiseInterpolationX(x, self.point['x'], self.point['y'])
+
+	# W.I.P.
+	def ClampedCubicSplineInterpolation(self, ptPerCouple):
+		return super().ClampedCubicSplineInterpolation(ptPerCouple)

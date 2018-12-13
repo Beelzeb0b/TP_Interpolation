@@ -1,11 +1,10 @@
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod, abstractproperty
 import numpy as np
 import math
 from PIL import Image
 
 # Interpolation
-class Interpolation:
-	__metaclass__ = ABCMeta
+class Interpolation(ABC):
 
 	#-----------------------------------------
 	# PROPERTIES
@@ -30,18 +29,19 @@ class Interpolation:
 
 	#
 	def NewtonCoef(self, xPoint, yPoint):
-		nbElement = len(yPoint)
+		nbElement = len(xPoint)
 
-		# Make a copy the yPoint point array
-		dividedDiff = np.copy(yPoint)
+		coef = np.copy(yPoint)
 
-		# Calculate all the divided difference
-		for i in range(1,nbElement):
-			dividedDiff[i:nbElement] = self.DividedDifference(xPoint[i-1], xPoint[i:], dividedDiff[i-1], dividedDiff[i:])
-			
-		return dividedDiff
+		for j in range(1, nbElement):
+
+			for i in range(nbElement-1, j-1, -1):
+				coef[i] = self.DividedDifference(xPoint[i-j], xPoint[i], coef[i-1], coef[i])
+
+		return coef
 
 	#
+	@abstractmethod
 	def PolynomialeInterpolation(self, x, xPoint, yPoint):
 		# y[x0]
 		result = yPoint[0]
@@ -51,7 +51,7 @@ class Interpolation:
 
 		# Newton Formula
 		for i in range(1,len(xPoint)):#self.N
-			# i'th divided difference
+			# delta y
 			otherY = dividedDifference[i]
 
 			# Generate all the (x - xN)
@@ -63,6 +63,7 @@ class Interpolation:
 		return result
 
 	# Piecewise interpolation
+	@abstractmethod
 	def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):#
 		x0 = int(x0)
 		x1 = int(x1)
@@ -96,6 +97,7 @@ class Interpolation:
 
 
 	# W.I.P.
+	@abstractmethod
 	def ClampedCubicSplineInterpolation(self, ptPerCouple):
 		p = []
 		#p[0] = #derivé de s(self.a) -> ?
@@ -106,12 +108,8 @@ class Interpolation:
 			# HOW TO GET p[i] ?!?!
 			#p[i] = ???
 
-			#y[i]   = s[i](x[i])
-
-			#p[i]   = s'[i](x[i])
-			#p[i+1] = s'[i](x[i+1])
-
-			#pi-1 + 4*pi + pi+1 = 3 * (self.DividedDifference(i) + self.DividedDifference(i-1))
+			# Plusieurs équations :
+			# pi-1 + 4*pi + pi+1 = 3 * (self.DividedDifference(i) + self.DividedDifference(i-1))
 			pass
 
 		s = []
