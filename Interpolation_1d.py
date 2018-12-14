@@ -11,16 +11,16 @@ class Interpolation_1d(Interpolation):
 	# PROPERTIES
 	#-----------------------------------------
 
-	#
+	# Number of point
 	N = 0
 	
-	#
+	# Start of the interval
 	a = 0
 	
-	#
+	# End of the interval
 	b = 0
 	
-	#
+	# Array of the function point
 	point = {'x':[],'y':[]}
 
 	#-----------------------------------------
@@ -37,26 +37,29 @@ class Interpolation_1d(Interpolation):
 	# METHODS
 	#-----------------------------------------
 
-	#
+	# 
 	def Function(self, x):
-		return 1/(1+x**2) #np.sin(x) #(4*x**3-3*x-4)/(5*x**2+x+1)
+		return 1/(1+x**2) #(4*x**3-3*x-4)/(5*x**2+x+1)
 
-	#
+	# Use the "Function" to create new point (used to interpolate)
 	def CreatePoint(self):
 		for i in np.linspace(self.a, self.b, self.N):
 			self.point['x'].append(i)
 			self.point['y'].append(self.Function(i))
 
+	# Calculate the error of a method over the function
 	# Probably need some rework to work with all function
+	# yFunc : the function value
+	# yCalculated : method result to compare with
 	def Error(self, yFunc, yCalculated):
 		yError = []
 		for i in range(self.N):
 			yError.append(yFunc[i] - yCalculated[i])
 		return yError
 
-	#
-	def PolynomialeInterpolation(self, x):
-		return super().PolynomialeInterpolation(x, self.point['x'], self.point['y'])
+	# Polynomial interpolation
+	def PolynomialInterpolation(self, x):
+		return super().PolynomialInterpolation(x, self.point['x'], self.point['y'])
 
 	# Piecewise interpolation
 	def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):
@@ -67,5 +70,5 @@ class Interpolation_1d(Interpolation):
 		return super().PiecewiseInterpolationX(x, self.point['x'], self.point['y'])
 
 	# W.I.P.
-	def ClampedCubicSplineInterpolation(self, ptPerCouple):
-		return super().ClampedCubicSplineInterpolation(ptPerCouple)
+	def ClampedCubicSplineInterpolation(self):
+		return super().ClampedCubicSplineInterpolation()

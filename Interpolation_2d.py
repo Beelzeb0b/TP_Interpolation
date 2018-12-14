@@ -12,13 +12,13 @@ class Interpolation_2d(Interpolation):
 	# PROPERTIES
 	#-----------------------------------------
 
-	#
+	# Input image name
 	inputImage = ""
 
-	#
+	# Output image name
 	outputImage = ""
 
-	#
+	# Array of the image
 	point = [[]]
 
 	#-----------------------------------------
@@ -34,18 +34,20 @@ class Interpolation_2d(Interpolation):
 	# METHODS
 	#-----------------------------------------
 
-	#
+	# Load an image
 	def loadImage(self):
 		img = Image.open(self.inputImage).convert('L')
 		self.point = np.asarray(img)
 
-	#
+	# Save the current "point"
 	def saveImage(self):
 		scipy.misc.imsave(self.outputImage, self.point)
 
-	# Used to generate new row in polynomiale interpolation
-	# Get the y row
-	def colArrayValue(self, array, col):
+	# Used to generate new row in polynomial interpolation
+	# Get all the value of a column and transform it into an array
+	# array : array
+	# col : column index of the wanted column
+	def getColAsArray(self, array, col):
 		result = []
 		for i in range(len(array)):
 			if len(array[i]) <= col:
@@ -54,26 +56,34 @@ class Interpolation_2d(Interpolation):
 				result.append(array[i][col])
 		return result
 
-	#
+	# Get the index for a wanted range
+	# arraySize : size of the array
+	# index : center of the range
+	# space : left and right space from the index
 	def getIndexs(self, arraySize, index, space):
 		startIndex = 0
 		stopIndex = 0
 
+		# If the array isn't big enough to get the wanted range
 		if arraySize > (space*2):
 			startIndex = index - space
 			stopIndex = index + space
 			
+			# If the (index - space) is outside of the array
 			if (index-space) < 0:
 				startIndex = 0
 				stopIndex = (space*2)
+			# If the (index + space) is outside of the array
 			elif (index+space) > arraySize:
 				startIndex = arraySize - (space*2)
 				stopIndex = arraySize
 
+		# Return the start and end index
 		return (int(startIndex), int(stopIndex))
 
-	#
-	def PolynomialeInterpolation(self, nbPoint):
+	# Polynomial interpolation
+	# nbPoint : number of point to use in the interpolation
+	def PolynomialInterpolation(self, nbPoint):
 		newImage = []
 
 		space = nbPoint / 2
@@ -95,7 +105,7 @@ class Interpolation_2d(Interpolation):
 				yPoint = self.point[y][start:stop]
 
 				# Create new X
-				xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
+				xp = super().PolynomialInterpolation(x, xPoint, yPoint)
 				newImage[y].append(xp)
 
 		# Generate new row
@@ -110,20 +120,20 @@ class Interpolation_2d(Interpolation):
 				xPoint = np.arange(start, stop)
 
 				# Get the n column
-				array = self.colArrayValue(newImage, x)
+				array = self.getColAsArray(newImage, x)
 
 				# Array of Pixels
 				(start, stop) = self.getIndexs(len(array), y, space)
 				yPoint = array[start:stop]
 
 				# Create new X
-				xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
+				xp = super().PolynomialInterpolation(x, xPoint, yPoint)
 				newImage[y+1].append(xp)
 
 		# Generate last row
 		newImage.append([])
 		for x in range(len(newImage[0])):
-			array = self.colArrayValue(newImage, x)
+			array = self.getColAsArray(newImage, x)
 
 			# Array of X
 			(start, stop) = self.getIndexs(len(newImage[y]), x, space)
@@ -134,14 +144,14 @@ class Interpolation_2d(Interpolation):
 			yPoint = array[start:stop]
 
 			# Create new X
-			xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
-			newImage[-1].append(xp)
+			xp = super().PolynomialInterpolation(x, xPoint, yPoint)
+			newImage[-1].append(xp) # Add new pixel
 
 		# Replace the old image with the new one
 		self.point = newImage
 
 
-	#
+	# Piecewise interpolation
 	def PiecewiseInterpolation(self):
 		newImage = []
 
@@ -170,6 +180,6 @@ class Interpolation_2d(Interpolation):
 		# Replace the old image with the new one
 		self.point = newImage
 
-	#
+	# W.I.P.
 	def ClampedCubicSplineInterpolation(self):
 		pass

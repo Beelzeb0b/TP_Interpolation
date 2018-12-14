@@ -23,11 +23,11 @@ class Interpolation(ABC):
 	# METHODS
 	#-----------------------------------------
 
-	#
+	# Calculate the divided difference
 	def DividedDifference(self, x0, x1, y0, y1):
 		return (y1 - y0) / (x1 - x0)
 
-	#
+	# Calculate the coef for the polynomial interpolation
 	def NewtonCoef(self, xPoint, yPoint):
 		nbElement = len(xPoint)
 
@@ -40,9 +40,9 @@ class Interpolation(ABC):
 
 		return coef
 
-	#
+	# Polynomial interpolation
 	@abstractmethod
-	def PolynomialeInterpolation(self, x, xPoint, yPoint):
+	def PolynomialInterpolation(self, x, xPoint, yPoint):
 		# y[x0]
 		result = yPoint[0]
 
@@ -64,20 +64,23 @@ class Interpolation(ABC):
 
 	# Piecewise interpolation
 	@abstractmethod
-	def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):#
+	def PiecewiseInterpolation(self, x0, x1, y0, y1, ptPerCouple):
 		x0 = int(x0)
 		x1 = int(x1)
 		y0 = int(y0)
 		y1 = int(y1)
 
-		loc_dx = (x1 - x0) / ptPerCouple #nb point
+		# delta X
+		dx = (x1 - x0) / ptPerCouple
 
-		loc_x = np.arange(x0, x1, loc_dx) #+0.1 to include the stop number
+		# Array of X
+		x = np.arange(x0, x1, dx)
 
+		# Piecewise formula
 		a = self.DividedDifference(x0, x1, y0, y1)
 		b = - (x0 * y1 - x1 * y0) / (x1 - x0)
 
-		return a * loc_x + b
+		return a * x + b
 
 	# Piecewise interpolation that take an x as param
 	def PiecewiseInterpolationX(self, x, xPoint, yPoint):

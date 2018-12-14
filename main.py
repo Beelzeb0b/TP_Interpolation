@@ -5,9 +5,12 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import scipy.misc
 
+
 from Interpolation_1d import Interpolation_1d
 from Interpolation_2d import Interpolation_2d
-	
+
+
+
 def Inter1d():
 
 	#
@@ -19,13 +22,10 @@ def Inter1d():
 
 	xFunc = []
 	yFunc = []
-
 	xPoly = []
 	yPoly = []
-
 	xInterval = []
 	yInterval = []
-
 	xSpline = []
 	ySpline = []
 
@@ -40,7 +40,7 @@ def Inter1d():
 		xFunc.append(x)
 		yFunc.append(Inter1d.Function(x))
 		xPoly.append(x)
-		yPoly.append(Inter1d.PolynomialeInterpolation(x))
+		yPoly.append(Inter1d.PolynomialInterpolation(x))
 		xInterval.append(x)
 		yInterval.append(Inter1d.PiecewiseInterpolationX(x))
 
@@ -68,7 +68,8 @@ def Inter2d():
 
 	#
 	Inter2d.PiecewiseInterpolation()
-	#Inter2d.PolynomialeInterpolation(2)
+	#Inter2d.PolynomialInterpolation(2)
+	#Inter2d.ClampedCubicSplineInterpolation()
 
 	#
 	Inter2d.saveImage()
