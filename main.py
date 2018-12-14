@@ -67,8 +67,8 @@ def Inter2d():
 	Inter2d.loadImage()
 
 	#
-	#Inter2d.PiecewiseInterpolation()
-	Inter2d.PolynomialeInterpolation(2)
+	Inter2d.PiecewiseInterpolation()
+	#Inter2d.PolynomialeInterpolation(2)
 
 	#
 	Inter2d.saveImage()

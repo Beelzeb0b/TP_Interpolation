@@ -79,7 +79,6 @@ class Interpolation_2d(Interpolation):
 		space = nbPoint / 2
 
 		# Generate new line
-		# WORK FINE
 		for y in range(len(self.point)):
 
 			newImage.append([])
@@ -100,32 +99,29 @@ class Interpolation_2d(Interpolation):
 				newImage[y].append(xp)
 
 		# Generate new row
-		# CURRENTLY BUGGED
-		# the output value seems legit, but strange effect
 		for y in range(0, (len(newImage))*2-2, 2):
 
 			newImage.insert(y+1, [])
 
 			for x in range(len(newImage[0])):
 
-				# Get the n column
-				array = self.colArrayValue(newImage, x)
-
 				# Array of X
 				(start, stop) = self.getIndexs(len(newImage[y]), x, space)
 				xPoint = np.arange(start, stop)
 
+				# Get the n column
+				array = self.colArrayValue(newImage, x)
+
 				# Array of Pixels
-				(start, stop) = self.getIndexs(len(array), x, space)
+				(start, stop) = self.getIndexs(len(array), y, space)
 				yPoint = array[start:stop]
 
 				# Create new X
 				xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
-				print(xp) # new pixel
 				newImage[y+1].append(xp)
 
 		# Generate last row
-		'''newImage.append([])
+		newImage.append([])
 		for x in range(len(newImage[0])):
 			array = self.colArrayValue(newImage, x)
 
@@ -138,8 +134,8 @@ class Interpolation_2d(Interpolation):
 			yPoint = array[start:stop]
 
 			# Create new X
-			xp = super().PolynomialeInterpolation(x, xPoint, yPoint)#y
-			newImage[-1].append(xp)'''
+			xp = super().PolynomialeInterpolation(x, xPoint, yPoint)
+			newImage[-1].append(xp)
 
 		# Replace the old image with the new one
 		self.point = newImage
