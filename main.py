@@ -43,6 +43,8 @@ def Inter1d():
 		yPoly.append(Inter1d.PolynomialInterpolation(x))
 		xInterval.append(x)
 		yInterval.append(Inter1d.PiecewiseInterpolationX(x))
+		#xSpline.append(x)
+		#ySpline.append(Inter1d.ClampedCubicSplineInterpolation(x))
 
 	# Show the function as well as the result of all the methods
 	plt.plot(xFunc,yFunc, label="Fonction")

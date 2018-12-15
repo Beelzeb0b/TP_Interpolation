@@ -103,17 +103,16 @@ class Interpolation(ABC):
 	@abstractmethod
 	def ClampedCubicSplineInterpolation(self, ptPerCouple):
 		p = []
-		#p[0] = #derivé de s(self.a) -> ?
-		#p[self.N] = #derivé de s(self.b) -> ?
-
+		p[0] = self.point['y'][0]
+		p[self.N] = self.point['y'][self.N]
 		# Generate all the P
 		for i in range(1, self.N-1):
-			# HOW TO GET p[i] ?!?!
-			#p[i] = ???
-
-			# Plusieurs équations :
-			# pi-1 + 4*pi + pi+1 = 3 * (self.DividedDifference(i) + self.DividedDifference(i-1))
-			pass
+			p[i] = 3 * (self.DividedDifference(self.point['x'][i+1], self.point['x'][i]) +  self.DividedDifference(self.point['x'][i], self.point['x'][i-1]))
+			p[i] -= p[i-1]
+			
+		for i in range(self.N, 1):
+			p[i] -= p[i+1]
+			p[i] /= 4
 
 		s = []
 		xPoint = []
