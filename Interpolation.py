@@ -101,13 +101,15 @@ class Interpolation(ABC):
 
 	# W.I.P.
 	@abstractmethod
-	def ClampedCubicSplineInterpolation(self, ptPerCouple):
+	def ClampedCubicSplineInterpolation(self, xPoint, yPoint, ptPerCouple):
 		p = []
-		p[0] = self.point['y'][0]
-		p[self.N] = self.point['y'][self.N]
+		
+		p[0] = yPoint[0]
+		p[self.N] = yPoint[self.N]
+		
 		# Generate all the P
 		for i in range(1, self.N-1):
-			p[i] = 3 * (self.DividedDifference(self.point['x'][i+1], self.point['x'][i]) +  self.DividedDifference(self.point['x'][i], self.point['x'][i-1]))
+			p[i] = 3 * (self.DividedDifference(xPoint[i+1], xPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1]))
 			p[i] -= p[i-1]
 			
 		for i in range(self.N, 1):
@@ -115,21 +117,21 @@ class Interpolation(ABC):
 			p[i] /= 4
 
 		s = []
-		xPoint = []
+		xs = []
 
 		# Generate all the S
 		for i in range(self.N-1):
-			for x in range(self.point['x'][i], self.point['x'][i+1], ptPerCouple):
-				deltaY = self.DividedDifference(self.point['x'][i+1], self.point['x'][i], self.point['y'][i+1], self.point['y'][i])
-				xPoint[i].append(x)
-				result = self.point['y'][i] + deltaY * (x - self.point['x'][i])
-				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i]))) * (p[i+1] - p[i]) * (x - self.point['x'][i]) * (x - self.point['x'][i+1])
-				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i])**2)) * (p[i+1] + p[i] - 2 * deltaY)
-				result *= (((x - self.point['x'][i])**2 * (x - self.point['x'][i+1])) + (x - self.point['x'][i]) * (x - self.point['x'][i+1])**2)
+			for x in range(xPoint[i], xPoint[i+1], ptPerCouple):
+				deltaY = self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i])
+				xs[i].append(x)
+				result = yPoint[i] + deltaY * (x - xPoint[i])
+				result += (1 / (2 * (xPoint[i+1] - xPoint[i]))) * (p[i+1] - p[i]) * (x - xPoint[i]) * (x - xPoint[i+1])
+				result += (1 / (2 * (xPoint[i+1] - xPoint[i])**2)) * (p[i+1] + p[i] - 2 * deltaY)
+				result *= (((x - xPoint[i])**2 * (x - xPoint[i+1])) + (x - xPoint[i]) * (x - xPoint[i+1])**2)
 				s[i].append(result)
 
 		# si(x) = ai + bi*(x-xi) + ci*(x-xi)**2 + di*(x-xi)**3
 		# si'(x) = bi + 2*ci*(x-xi) + 3*di*(x-xi)**2
 		# si''(x) = 2*ci + 6*di*(x-xi)
 		
-		return (xPoint, s)
+		return (xs, s)

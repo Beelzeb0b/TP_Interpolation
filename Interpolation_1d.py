@@ -70,5 +70,5 @@ class Interpolation_1d(Interpolation):
 		return super().PiecewiseInterpolationX(x, self.point['x'], self.point['y'])
 
 	# W.I.P.
-	def ClampedCubicSplineInterpolation(self):
-		return super().ClampedCubicSplineInterpolation()
+	def ClampedCubicSplineInterpolation(self, x):
+		return super().ClampedCubicSplineInterpolation(x, self.point['x'], self.point['y'], 1)
