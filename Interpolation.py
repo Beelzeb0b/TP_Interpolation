@@ -121,10 +121,11 @@ class Interpolation(ABC):
 		# Generate all the S
 		for i in range(self.N-1):
 			for x in range(self.point['x'][i], self.point['x'][i+1], ptPerCouple):
+				deltaY = self.DividedDifference(self.point['x'][i+1], self.point['x'][i], self.point['y'][i+1], self.point['y'][i])
 				xPoint[i].append(x)
-				result = self.point['y'][i] + self.DividedDifference(i) * (x - self.point['x'][i])
+				result = self.point['y'][i] + deltaY * (x - self.point['x'][i])
 				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i]))) * (p[i+1] - p[i]) * (x - self.point['x'][i]) * (x - self.point['x'][i+1])
-				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i])**2)) * (p[i+1] + p[i] - 2 * self.DividedDifference(i))
+				result += (1 / (2 * (self.point['x'][i+1] - self.point['x'][i])**2)) * (p[i+1] + p[i] - 2 * deltaY)
 				result *= (((x - self.point['x'][i])**2 * (x - self.point['x'][i+1])) + (x - self.point['x'][i]) * (x - self.point['x'][i+1])**2)
 				s[i].append(result)
 
