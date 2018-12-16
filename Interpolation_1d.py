@@ -71,4 +71,5 @@ class Interpolation_1d(Interpolation):
 
 	# W.I.P.
 	def ClampedCubicSplineInterpolation(self, x):
-		return super().ClampedCubicSplineInterpolation(x, self.point['x'], self.point['y'], 1)
+		p = super().SplineEquation(self.point['x'], self.point['y'])
+		return super().ClampedCubicSplineInterpolation(x, self.point['x'], self.point['y'], p)
