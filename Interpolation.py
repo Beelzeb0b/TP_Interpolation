@@ -144,12 +144,14 @@ class Interpolation(ABC):
 		for i in range(1, nbElement-1):
 			p[i] = 3 * (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1]))
 			
+		# init matrix as for equation system
 		m=[]
 		for i in range(nbElement+1):
 			m.append([])
 			for j in range(nbElement+2):
 				m[i].append(0)
 				
+		# set value in equation system
 		m[0][0]=1
 		m[nbElement][nbElement]=1
 		for i in range(1, nbElement):
@@ -160,7 +162,7 @@ class Interpolation(ABC):
 			
 		
 		
-		print(self.gauss(m))
+		#print(self.gauss(m))
 		'''# Generate all the P[i] , i = 1..N-1
 		for i in range(1, nbElement-1):
 			p.append(3 * (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1])))
@@ -174,7 +176,7 @@ class Interpolation(ABC):
 			p[i] -= p[i+1]
 			p[i] /= 4'''
 			
-		return p		
+		return self.gauss(m)		
 
 	# W.I.P.
 	@abstractmethod

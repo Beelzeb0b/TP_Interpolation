@@ -45,8 +45,6 @@ def Inter1d():
 		yInterval.append(Inter1d.PiecewiseInterpolationX(x))
 		xSpline.append(x)
 		ySpline.append(Inter1d.ClampedCubicSplineInterpolation(x))
-
-	#Inter1d.ClampedCubicSplineInterpolation(2)
 	
 	# Show the function as well as the result of all the methods
 	plt.plot(xFunc,yFunc, label="Fonction")
