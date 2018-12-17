@@ -13,10 +13,13 @@ from Interpolation_2d import Interpolation_2d
 
 def Inter1d():
 
-	#
-	nbPoint = 20
+	# Number of points
+	nbPoint = 3
 
-	#
+	# The higher the better
+	precision = 100
+
+	# Range
 	a = -10
 	b = 10
 
@@ -36,7 +39,7 @@ def Inter1d():
 	Inter1d.CreatePoint()
 	
 	# 
-	for x in np.linspace(a, b, 100):#
+	for x in np.linspace(a, b, precision):#
 		xFunc.append(x)
 		yFunc.append(Inter1d.Function(x))
 		xPoly.append(x)
@@ -45,12 +48,11 @@ def Inter1d():
 		yInterval.append(Inter1d.PiecewiseInterpolationX(x))
 		xSpline.append(x)
 		ySpline.append(Inter1d.ClampedCubicSplineInterpolation(x))
-		
-	#Inter1d.ClampedCubicSplineInterpolation(2)
+
 	
 	# Show the function as well as the result of all the methods
 	plt.plot(xFunc,yFunc, label="Fonction")
-	#plt.plot(xPoly,yPoly, '-', label="Poly degré N-1")
+	plt.plot(xPoly,yPoly, '-', label="Poly degré N-1")
 	plt.plot(xInterval,yInterval, '-', label="Morceaux degré 1")
 	plt.plot(xSpline,ySpline, '-', label="Spline")
 	plt.xlabel("$x$")
@@ -59,7 +61,7 @@ def Inter1d():
 	plt.grid(True)
 	plt.show()
 
-	#print(sum(Inter1d.Error(yFunc, ySpline)))
+	#print(sum(Inter1d.Error(yFunc, yPoly)))
 
 
 
@@ -72,9 +74,9 @@ def Inter2d():
 	Inter2d.loadImage()
 
 	#
-	Inter2d.PiecewiseInterpolation()
+	#Inter2d.PiecewiseInterpolation()
 	#Inter2d.PolynomialInterpolation(2)
-	#Inter2d.ClampedCubicSplineInterpolation() # not working
+	Inter2d.ClampedCubicSplineInterpolation() # not working
 
 	#
 	Inter2d.saveImage()

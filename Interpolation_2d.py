@@ -182,4 +182,32 @@ class Interpolation_2d(Interpolation):
 
 	# W.I.P.
 	def ClampedCubicSplineInterpolation(self):
-		pass
+		newImage = []
+
+		# Generate new line
+		for y in range(len(self.point)):
+
+			newImage.append([])
+
+			for x in range(len(self.point[0])):
+				newImage[y].append(self.point[y][x])
+
+				# Array of X
+				(start, stop) = self.getIndexs(len(self.point[y]), x, len(self.point[y])-1)
+				xPoint = np.arange(start, stop)
+
+				# Array of Pixels
+				(start, stop) = self.getIndexs(len(self.point[y]), x, len(self.point[y])-1)
+				yPoint = self.point[y][start:stop]
+
+				p = super().SplineEquation(xPoint, yPoint)
+
+				# Create new X
+				xp = super().ClampedCubicSplineInterpolation(x, xPoint, yPoint, p)
+				newImage[y].append(xp)
+
+		# Generate new column
+		# TODO
+
+		# Replace the old image with the new one
+		self.point = newImage

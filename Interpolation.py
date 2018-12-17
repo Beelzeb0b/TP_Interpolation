@@ -150,8 +150,6 @@ class Interpolation(ABC):
 			for j in range(nbElement+1):
 				m[i].append(0)
 				
-		#print(m)
-				
 		m[0][0] = 1
 		m[0][nbElement] = p[0]
 		m[nbElement-1][nbElement-1]= 1
@@ -162,13 +160,9 @@ class Interpolation(ABC):
 			m[i][nbElement] = p[i]
 		
 		
-		#print(m)
-		
-		
 		return self.gauss(m)
-		#return self.gauss(m)
 
-	# W.I.P.
+	# 
 	@abstractmethod
 	def ClampedCubicSplineInterpolation(self, x, xPoint, yPoint, p):
 		# Find the interval for the x param
@@ -192,24 +186,3 @@ class Interpolation(ABC):
 		s += (1 / 2 * (x1-x0)**2) * (p[i+1] + p[i] - 2 * dy) * ((x-x0)**2 * (x-x1) + (x-x0 )*(x-x1)**2)
 		
 		return s
-		
-		'''
-		s = []
-		xs = []
-
-		# Generate all the S
-		for i in range(N-1):
-			for x in range(xPoint[i], xPoint[i+1], ptPerCouple):
-				deltaY = self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i])
-				xs[i].append(x)
-				result = yPoint[i] + deltaY * (x - xPoint[i])
-				result += (1 / (2 * (xPoint[i+1] - xPoint[i]))) * (p[i+1] - p[i]) * (x - xPoint[i]) * (x - xPoint[i+1])
-				result += (1 / (2 * (xPoint[i+1] - xPoint[i])**2)) * (p[i+1] + p[i] - 2 * deltaY)
-				result *= (((x - xPoint[i])**2 * (x - xPoint[i+1])) + (x - xPoint[i]) * (x - xPoint[i+1])**2)
-				s[i].append(result)
-
-		# si(x) = ai + bi*(x-xi) + ci*(x-xi)**2 + di*(x-xi)**3
-		# si'(x) = bi + 2*ci*(x-xi) + 3*di*(x-xi)**2
-		# si''(x) = 2*ci + 6*di*(x-xi)
-		
-		return (xs, s)'''
