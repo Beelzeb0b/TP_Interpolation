@@ -141,6 +141,9 @@ class Interpolation(ABC):
 		for i in range(0, nbElement):
 			p.append(0)
 		
+		p[0] = yPoint[0]
+		p[nbElement-1] = yPoint[nbElement-1]
+		
 		for i in range(1, nbElement-1):
 			p[i] = 3 * (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1]))
 			
@@ -152,6 +155,13 @@ class Interpolation(ABC):
 				m[i].append(0)
 				
 		# set value in equation system
+		#1 0 0 0 0 0 0 0 0 p0
+		#1 4 1 0 0 0 0 0 0 p1
+		#0 1 4 1 0 0 0 0 0 p2
+		#0 0 1 4 1 0 0 0 0 p3
+		#....
+		#0 0 0 0 0 0 1 4 1 pn-1
+		#0 0 0 0 0 0 0 0 1 pn
 		m[0][0]=1
 		m[nbElement][nbElement]=1
 		for i in range(1, nbElement):
@@ -159,24 +169,10 @@ class Interpolation(ABC):
 			m[i][i] = 4
 			m[i][i+1] = 1
 			m[i][nbElement+1] = p[i]
+		
+		print(m)
 			
-		
-		
-		#print(self.gauss(m))
-		'''# Generate all the P[i] , i = 1..N-1
-		for i in range(1, nbElement-1):
-			p.append(3 * (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1])))
-			p[i] -= p[i-1]
-		
-		
-		#p.append(yPoint[nbElement-1]) # p[N]
-		p.append(0) # p[N]
-			
-		for i in range(nbElement - 1, 1):
-			p[i] -= p[i+1]
-			p[i] /= 4'''
-			
-		return self.gauss(m)		
+		return self.gauss(m)
 
 	# W.I.P.
 	@abstractmethod
@@ -197,29 +193,13 @@ class Interpolation(ABC):
 		dy = self.DividedDifference(x1, x0, y1, y0)
 		
 		#Genere S
-		s = yPoint[i] + (dy * (x-x0))
+		s = y0 + (dy * (x-x0))
 		s += (1 / 2 * (x1-x0)) * (p[i+1] - p[i]) * (x-x0) * (x-x1)
 		s += (1 / 2 * (x1-x0)**2) * (p[i+1] + p[i] - 2 * dy) * ((x-x0)**2 * (x-x1) + (x-x0 )*(x-x1)**2)
 		
 		return s
 		
-		'''N = len(xPoint)
-		p = []
-		
-		p.append(yPoint[0]) # p[0]
-		
-		# Generate all the P[i] , i = 1..N-1
-		for i in range(1, N-2):
-			p.append(3 * (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1])))
-			p[i] -= p[i-1]
-		
-		
-		p.append(yPoint[N-1]) # p[N]
-			
-		for i in range(N, 1):
-			p[i] -= p[i+1]
-			p[i] /= 4
-
+		'''
 		s = []
 		xs = []
 
