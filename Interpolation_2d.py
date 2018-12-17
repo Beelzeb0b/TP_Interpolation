@@ -56,7 +56,7 @@ class Interpolation_2d(Interpolation):
 				result.append(array[i][col])
 		return result
 
-	# Get the index for a wanted range
+	# Get a range using an index
 	# arraySize : size of the array
 	# index : center of the range
 	# space : left and right space from the index
@@ -88,7 +88,7 @@ class Interpolation_2d(Interpolation):
 
 		space = nbPoint / 2
 
-		# Generate new line
+		# Generate new column
 		for y in range(len(self.point)):
 
 			newImage.append([])
@@ -104,9 +104,9 @@ class Interpolation_2d(Interpolation):
 				(start, stop) = self.getIndexs(len(self.point[y]), x, space)
 				yPoint = self.point[y][start:stop]
 
-				# Create new X
+				# Create new pixel
 				xp = super().PolynomialInterpolation(x, xPoint, yPoint)
-				newImage[y].append(xp)
+				newImage[y].append(xp) # Add new pixel
 
 		# Generate new row
 		for y in range(0, (len(newImage))*2-2, 2):
@@ -126,9 +126,9 @@ class Interpolation_2d(Interpolation):
 				(start, stop) = self.getIndexs(len(array), y, space)
 				yPoint = array[start:stop]
 
-				# Create new X
+				# Create new pixel
 				xp = super().PolynomialInterpolation(x, xPoint, yPoint)
-				newImage[y+1].append(xp)
+				newImage[y+1].append(xp) # Add new pixel
 
 		# Generate last row
 		newImage.append([])
@@ -143,7 +143,7 @@ class Interpolation_2d(Interpolation):
 			(start, stop) = self.getIndexs(len(array), x, space)
 			yPoint = array[start:stop]
 
-			# Create new X
+			# Create new pixel
 			xp = super().PolynomialInterpolation(x, xPoint, yPoint)
 			newImage[-1].append(xp) # Add new pixel
 
@@ -155,7 +155,7 @@ class Interpolation_2d(Interpolation):
 	def PiecewiseInterpolation(self):
 		newImage = []
 
-		# Generate new line
+		# Generate new column
 		for y in range(len(self.point)):
 			newImage.append([])
 			newImage[y].append(self.point[y][0])
@@ -180,7 +180,7 @@ class Interpolation_2d(Interpolation):
 		# Replace the old image with the new one
 		self.point = newImage
 
-	# W.I.P.
+	# Spline interpolation [Bugged ?]
 	def ClampedCubicSplineInterpolation(self, nbPoint):
 		newImage = []
 
