@@ -32,13 +32,13 @@ def Inter1d():
 	xSpline = []
 	ySpline = []
 
-	#
+	# Create new interpolation 1d
 	Inter1d = Interpolation_1d(a, b, nbPoint)
 	
 	#
 	Inter1d.CreatePoint()
 	
-	# 
+	# Interpolation of all the méthodes
 	for x in np.linspace(a, b, precision):#
 		xFunc.append(x)
 		yFunc.append(Inter1d.Function(x))
@@ -61,16 +61,17 @@ def Inter1d():
 	plt.grid(True)
 	plt.show()
 
+	# Show the error
 	#print(sum(Inter1d.Error(yFunc, yPoly)))
 
 
 
 
 def Inter2d():
-	#
+	# Create new interpolation 2d
 	Inter2d = Interpolation_2d("image.png", "output.png")
 
-	#
+	# Load the image
 	Inter2d.loadImage()
 
 	#
@@ -78,7 +79,7 @@ def Inter2d():
 	#Inter2d.PolynomialInterpolation(2) # Going beyond 4 is a bad idea
 	Inter2d.ClampedCubicSplineInterpolation(10) # the bigger the longer and the better
 
-	#
+	# Save the image
 	Inter2d.saveImage()
 
 

@@ -3,7 +3,7 @@ import numpy as np
 import math
 from PIL import Image
 
-# Interpolation
+# Interpolation Abstract Class
 class Interpolation(ABC):
 
 	#-----------------------------------------
@@ -31,8 +31,10 @@ class Interpolation(ABC):
 	def NewtonCoef(self, xPoint, yPoint):
 		nbElement = len(xPoint)
 
+		# Make a copy of the yPoint array
 		coef = np.copy(yPoint)
 
+		# Calculate the coefs
 		for j in range(1, nbElement):
 
 			for i in range(nbElement-1, j-1, -1):
@@ -98,6 +100,7 @@ class Interpolation(ABC):
 
 		return a * x + b
 		
+	#
 	def gauss(self, A):
 		n = len(A)
 	
@@ -133,7 +136,7 @@ class Interpolation(ABC):
 				A[k][n] -= A[k][i] * x[i]
 		return x
 		
-
+	#
 	def SplineEquation(self, xPoint, yPoint):
 		nbElement = len(xPoint)
 	

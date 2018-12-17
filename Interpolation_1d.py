@@ -37,7 +37,7 @@ class Interpolation_1d(Interpolation):
 	# METHODS
 	#-----------------------------------------
 
-	# 
+	# Function to use
 	def Function(self, x):
 		return 1/(1+x**2) # (4*x**3-3*x-4)/(5*x**2+x+1)
 
@@ -48,7 +48,6 @@ class Interpolation_1d(Interpolation):
 			self.point['y'].append(self.Function(i))
 
 	# Calculate the error of a method over the function
-	# Probably need some rework to work with all function
 	# yFunc : the function value
 	# yCalculated : method result to compare with
 	def Error(self, yFunc, yCalculated):
