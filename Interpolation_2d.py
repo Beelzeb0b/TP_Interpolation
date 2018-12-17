@@ -181,10 +181,12 @@ class Interpolation_2d(Interpolation):
 		self.point = newImage
 
 	# W.I.P.
-	def ClampedCubicSplineInterpolation(self):
+	def ClampedCubicSplineInterpolation(self, nbPoint):
 		newImage = []
 
-		# Generate new line
+		space = nbPoint / 2
+
+		# Generate new column
 		for y in range(len(self.point)):
 
 			newImage.append([])
@@ -193,11 +195,11 @@ class Interpolation_2d(Interpolation):
 				newImage[y].append(self.point[y][x])
 
 				# Array of X
-				(start, stop) = self.getIndexs(len(self.point[y]), x, len(self.point[y])-1)
+				(start, stop) = self.getIndexs(len(self.point[y]), x, space)
 				xPoint = np.arange(start, stop)
 
 				# Array of Pixels
-				(start, stop) = self.getIndexs(len(self.point[y]), x, len(self.point[y])-1)
+				(start, stop) = self.getIndexs(len(self.point[y]), x, space)
 				yPoint = self.point[y][start:stop]
 
 				p = super().SplineEquation(xPoint, yPoint)
@@ -206,8 +208,49 @@ class Interpolation_2d(Interpolation):
 				xp = super().ClampedCubicSplineInterpolation(x, xPoint, yPoint, p)
 				newImage[y].append(xp)
 
-		# Generate new column
-		# TODO
+		# Generate new row
+		for y in range(0, (len(newImage))*2-2, 2):
+
+			newImage.insert(y+1, [])
+
+			for x in range(len(newImage[0])):
+
+				# Array of X
+				(start, stop) = self.getIndexs(len(newImage[y]), x, space)
+				xPoint = np.arange(start, stop)
+
+				# Get the n column
+				array = self.getColAsArray(newImage, x)
+
+				# Array of Pixels
+				(start, stop) = self.getIndexs(len(array), y, space)
+				yPoint = array[start:stop]
+
+				p = super().SplineEquation(xPoint, yPoint)
+
+				# Create new X
+				xp = super().ClampedCubicSplineInterpolation(x, xPoint, yPoint, p)
+				newImage[y+1].append(xp)
+
+
+		# Generate last row
+		newImage.append([])
+		for x in range(len(newImage[0])):
+			array = self.getColAsArray(newImage, x)
+
+			# Array of X
+			(start, stop) = self.getIndexs(len(newImage[y]), x, space)
+			xPoint = np.arange(start, stop)
+
+			# Array of Pixels
+			(start, stop) = self.getIndexs(len(array), x, space)
+			yPoint = array[start:stop]
+
+			p = super().SplineEquation(xPoint, yPoint)
+
+			# Create new X
+			xp = super().ClampedCubicSplineInterpolation(x, xPoint, yPoint, p)
+			newImage[-1].append(xp) # Add new pixel
 
 		# Replace the old image with the new one
 		self.point = newImage

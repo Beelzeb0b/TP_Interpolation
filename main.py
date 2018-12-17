@@ -75,8 +75,8 @@ def Inter2d():
 
 	#
 	#Inter2d.PiecewiseInterpolation()
-	#Inter2d.PolynomialInterpolation(2)
-	Inter2d.ClampedCubicSplineInterpolation() # not working
+	#Inter2d.PolynomialInterpolation(2) # Going beyond 4 is a bad idea
+	Inter2d.ClampedCubicSplineInterpolation(10) # the bigger the longer and the better
 
 	#
 	Inter2d.saveImage()
@@ -84,8 +84,8 @@ def Inter2d():
 
 
 def main():
-	Inter1d()
-	#Inter2d()
+	#Inter1d()
+	Inter2d()
 	
 
 if __name__ == "__main__":
