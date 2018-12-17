@@ -14,7 +14,7 @@ from Interpolation_2d import Interpolation_2d
 def Inter1d():
 
 	# Number of points
-	nbPoint = 3
+	nbPoint = 10
 
 	# The higher the better
 	precision = 100

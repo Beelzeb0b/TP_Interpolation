@@ -25,7 +25,7 @@ class Interpolation(ABC):
 
 	# Calculate the divided difference
 	def DividedDifference(self, x0, x1, y0, y1):
-		return (y1 - y0) / (x1 - x0)
+		return (float(y1) - float(y0)) / (float(x1) - float(x0))
 
 	# Calculate the coef for the polynomial interpolation
 	def NewtonCoef(self, xPoint, yPoint):
