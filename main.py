@@ -14,7 +14,7 @@ from Interpolation_2d import Interpolation_2d
 def Inter1d():
 
 	#
-	nbPoint = 10
+	nbPoint = 20
 
 	#
 	a = -10
@@ -36,7 +36,7 @@ def Inter1d():
 	Inter1d.CreatePoint()
 	
 	# 
-	for x in np.linspace(a, b, 15):#
+	for x in np.linspace(a, b, 100):#
 		xFunc.append(x)
 		yFunc.append(Inter1d.Function(x))
 		xPoly.append(x)
@@ -50,7 +50,7 @@ def Inter1d():
 	
 	# Show the function as well as the result of all the methods
 	plt.plot(xFunc,yFunc, label="Fonction")
-	plt.plot(xPoly,yPoly, '-', label="Poly degré N-1")
+	#plt.plot(xPoly,yPoly, '-', label="Poly degré N-1")
 	plt.plot(xInterval,yInterval, '-', label="Morceaux degré 1")
 	plt.plot(xSpline,ySpline, '-', label="Spline")
 	plt.xlabel("$x$")
@@ -58,6 +58,8 @@ def Inter1d():
 	plt.legend(bbox_to_anchor=(0., 1.02, 1., 0.102), loc=3, ncol=3, mode="expand", borderaxespad=0.)
 	plt.grid(True)
 	plt.show()
+
+	#print(sum(Inter1d.Error(yFunc, ySpline)))
 
 
 

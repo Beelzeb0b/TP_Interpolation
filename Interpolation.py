@@ -162,7 +162,7 @@ class Interpolation(ABC):
 			m[i][nbElement] = p[i]
 		
 		
-		print(m)
+		#print(m)
 		
 		
 		return self.gauss(m)
