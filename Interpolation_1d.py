@@ -51,9 +51,9 @@ class Interpolation_1d(Interpolation):
 	# yFunc : the function value
 	# yCalculated : method result to compare with
 	def Error(self, yFunc, yCalculated):
-		yError = []
+		yError = 0
 		for i in range(self.N):
-			yError.append(abs(yFunc[i] - yCalculated[i]))
+			yError += abs(yFunc[i] - yCalculated[i])
 		return yError
 
 	# Polynomial interpolation

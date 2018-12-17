@@ -62,7 +62,7 @@ def Inter1d():
 	plt.show()
 
 	# Show the error
-	#print(sum(Inter1d.Error(yFunc, yPoly)))
+	print(Inter1d.Error(yFunc, yPoly))
 
 
 
@@ -85,8 +85,8 @@ def Inter2d():
 
 
 def main():
-	#Inter1d()
-	Inter2d()
+	Inter1d()
+	#Inter2d()
 	
 
 if __name__ == "__main__":
