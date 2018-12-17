@@ -39,7 +39,7 @@ class Interpolation_1d(Interpolation):
 
 	# 
 	def Function(self, x):
-		return 1/(1+x**2) #(4*x**3-3*x-4)/(5*x**2+x+1)
+		return 1/(1+x**2) # (4*x**3-3*x-4)/(5*x**2+x+1)
 
 	# Use the "Function" to create new point (used to interpolate)
 	def CreatePoint(self):

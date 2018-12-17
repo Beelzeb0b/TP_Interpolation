@@ -138,41 +138,35 @@ class Interpolation(ABC):
 		nbElement = len(xPoint)
 	
 		p = []
-		for i in range(0, nbElement):
+		for i in range(nbElement):
 			p.append(0)
-		
-		p[0] = yPoint[0]
-		p[nbElement-1] = yPoint[nbElement-1]
-		
-		for i in range(1, nbElement-1):
-			p[i] = 3 * (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) +  self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1]))
 			
-		# init matrix as for equation system
+		for i in range(1, nbElement-1):
+			p[i] = 3* (self.DividedDifference(xPoint[i+1], xPoint[i], yPoint[i+1], yPoint[i]) + self.DividedDifference(xPoint[i], xPoint[i-1], yPoint[i], yPoint[i-1]))
+		
 		m=[]
-		for i in range(nbElement+1):
+		for i in range(nbElement):
 			m.append([])
-			for j in range(nbElement+2):
+			for j in range(nbElement+1):
 				m[i].append(0)
 				
-		# set value in equation system
-		#1 0 0 0 0 0 0 0 0 p0
-		#1 4 1 0 0 0 0 0 0 p1
-		#0 1 4 1 0 0 0 0 0 p2
-		#0 0 1 4 1 0 0 0 0 p3
-		#....
-		#0 0 0 0 0 0 1 4 1 pn-1
-		#0 0 0 0 0 0 0 0 1 pn
-		m[0][0]=1
-		m[nbElement][nbElement]=1
-		for i in range(1, nbElement):
+		#print(m)
+				
+		m[0][0] = 1
+		m[0][nbElement] = p[0]
+		m[nbElement-1][nbElement-1]= 1
+		for i in range(1, nbElement-1):
 			m[i][i-1] = 1
 			m[i][i] = 4
 			m[i][i+1] = 1
-			m[i][nbElement+1] = p[i]
+			m[i][nbElement] = p[i]
+		
 		
 		print(m)
-			
+		
+		
 		return self.gauss(m)
+		#return self.gauss(m)
 
 	# W.I.P.
 	@abstractmethod

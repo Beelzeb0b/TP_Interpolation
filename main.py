@@ -36,7 +36,7 @@ def Inter1d():
 	Inter1d.CreatePoint()
 	
 	# 
-	for x in np.linspace(a, b, 100):#
+	for x in np.linspace(a, b, 15):#
 		xFunc.append(x)
 		yFunc.append(Inter1d.Function(x))
 		xPoly.append(x)
@@ -44,15 +44,15 @@ def Inter1d():
 		xInterval.append(x)
 		yInterval.append(Inter1d.PiecewiseInterpolationX(x))
 		xSpline.append(x)
-		#ySpline.append(Inter1d.ClampedCubicSplineInterpolation(x))
+		ySpline.append(Inter1d.ClampedCubicSplineInterpolation(x))
 		
-	ySpline.append(Inter1d.ClampedCubicSplineInterpolation(2))
+	#Inter1d.ClampedCubicSplineInterpolation(2)
 	
 	# Show the function as well as the result of all the methods
 	plt.plot(xFunc,yFunc, label="Fonction")
 	plt.plot(xPoly,yPoly, '-', label="Poly degré N-1")
 	plt.plot(xInterval,yInterval, '-', label="Morceaux degré 1")
-	#plt.plot(xSpline,ySpline, '-', label="Spline")
+	plt.plot(xSpline,ySpline, '-', label="Spline")
 	plt.xlabel("$x$")
 	plt.ylabel("$y$")
 	plt.legend(bbox_to_anchor=(0., 1.02, 1., 0.102), loc=3, ncol=3, mode="expand", borderaxespad=0.)
