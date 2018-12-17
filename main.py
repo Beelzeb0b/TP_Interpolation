@@ -77,7 +77,7 @@ def Inter2d():
 	#
 	#Inter2d.PiecewiseInterpolation()
 	#Inter2d.PolynomialInterpolation(2) # Going beyond 4 is a bad idea
-	Inter2d.ClampedCubicSplineInterpolation(2) # Bugged ?
+	Inter2d.ClampedCubicSplineInterpolation()
 
 	# Save the image
 	Inter2d.saveImage()
